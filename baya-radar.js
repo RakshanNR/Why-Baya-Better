@@ -74,7 +74,7 @@
     "  --br-body:'Manrope','Century Gothic',system-ui,-apple-system,'Segoe UI',sans-serif;",
     "  position:relative;background:#ffffff;color:var(--br-ink);font-family:var(--br-body);",
     "  border:1px solid var(--br-line);border-radius:4px;padding:26px 28px 24px;",
-    "  box-sizing:border-box;max-width:960px;width:100%;}",
+    "  box-sizing:border-box;width:100%;}",
     ".bradar-root *{box-sizing:border-box;}",
     ".bradar-eyebrow{font-family:var(--br-body);font-size:14px;font-weight:700;",
     "  text-transform:uppercase;letter-spacing:.12em;color:var(--br-accent);margin:0 0 8px;}",
