@@ -25,7 +25,10 @@
  * across all metrics; click an axis corner (or its label, or any data point) for
  * that metric's side-by-side; click the same corner again (or "Back") to return
  * to the averages. Click legend chips to hide/show a company; hover a chip to
- * spotlight it on the chart; set `editable: true` for the live value editor.
+ * spotlight it on the chart. There is no in-browser data editor by design — all
+ * values are set from code (`series[].values`, `chart.setValue()`, `chart.update()`).
+ * Set `showPanel: false` for a chart-only small-multiple (no comparison matrix) and
+ * `compact: true` to tighten type/spacing for dense grids.
  *
  * Styled to the Baya / Chiplet Design System v1.2 — Cyber Blue #0086FF, Poppins +
  * Manrope, 4px radii, hairline-bordered flat surfaces (no drop shadows). Uses
@@ -38,7 +41,6 @@
   var SVG_NS = "http://www.w3.org/2000/svg";
   var STYLE_ID = "baya-radar-styles";
   var FONTS_ID = "baya-radar-fonts";
-  var UID = 0;
   var REDUCED = typeof matchMedia !== "undefined" &&
     matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -62,7 +64,8 @@
     maxValue: 10,
     rings: 5,
     selected: null,   // null = overall average view; 0..N-1 opens on that metric
-    editable: false,
+    showPanel: true,  // false = chart + legend only (no comparison matrix) — for dense grids
+    compact: false,   // true = tightened type/spacing for small multiples
     webFonts: true
   };
 
@@ -77,10 +80,14 @@
     "  box-sizing:border-box;width:100%;}",
     ".bradar-root *{box-sizing:border-box;}",
     ".bradar-eyebrow{font-family:var(--br-body);font-size:14px;font-weight:700;",
-    "  text-transform:uppercase;letter-spacing:.12em;color:var(--br-accent);margin:0 0 8px;}",
-    ".bradar-title{font-family:var(--br-head);font-size:23px;font-weight:600;margin:0 0 4px;}",
+    "  text-transform:uppercase;letter-spacing:.12em;color:var(--br-accent);",
+    "  margin:0 0 clamp(0.5rem,0.412rem + 0.3756vw,0.75rem);}",
+    ".bradar-title{font-family:var(--br-head);font-weight:500;line-height:1.3;",
+    "  font-size:clamp(1.125rem,0.9929rem + 0.5634vw,1.5rem);",
+    "  margin:0 0 clamp(0.875rem,0.743rem + 0.5634vw,1.25rem);}",
     ".bradar-subtitle{font-size:13.5px;font-weight:500;color:var(--br-sub);margin:0 0 16px;line-height:1.5;}",
-    ".bradar-legend{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px;}",
+    ".bradar-right{flex:1 1 310px;min-width:255px;display:flex;flex-direction:column;gap:10px;}",
+    ".bradar-legend{display:flex;flex-wrap:wrap;gap:8px;margin:0;}",
     ".bradar-chip{display:inline-flex;align-items:center;gap:7px;font-family:var(--br-body);",
     "  font-size:12.5px;font-weight:600;color:var(--br-ink);background:#f4f4f4;",
     "  border:none;border-radius:4px;padding:7px 14px 7px 11px;cursor:pointer;transition:background .15s;}",
@@ -110,8 +117,10 @@
     ".bradar-tt-dot{width:8px;height:8px;border-radius:2px;flex:0 0 8px;}",
     ".bradar-tt-metric{font-size:11px;font-weight:500;color:#c6ccd4;}",
     ".bradar-tt-metric b{color:#fff;font-family:var(--br-head);font-size:12.5px;font-weight:700;margin-left:2px;}",
-    ".bradar-panel{flex:0 1 310px;min-width:255px;background:#f4f4f4;border:1px solid var(--br-line);",
-    "  border-radius:4px;padding:18px 18px 16px;margin-top:10px;}",
+    ".bradar-panel{background:#f4f4f4;border:1px solid var(--br-line);",
+    "  border-radius:4px;padding:18px 18px 16px;}",
+    ".bradar-panel-caption{font-family:var(--br-body);font-size:12px;font-weight:400;",
+    "  letter-spacing:.02em;line-height:1.4;color:var(--br-mut);margin:0 0 6px;}",
     ".bradar-panel-title{font-family:var(--br-head);font-size:15.5px;font-weight:600;margin:0 0 2px;}",
     ".bradar-panel-desc{font-size:11.5px;font-weight:500;color:var(--br-mut);margin:0 0 14px;line-height:1.4;}",
     ".bradar-bar-row{display:flex;align-items:center;gap:9px;margin:0 0 11px;transition:opacity .25s;}",
@@ -133,28 +142,18 @@
     "  font-weight:600;color:var(--br-link);cursor:pointer;}",
     ".bradar-back:hover{color:var(--br-link-deep);}",
     ".bradar-back:focus-visible{outline:2px solid var(--br-accent);outline-offset:2px;}",
-    ".bradar-editor{margin-top:18px;border-top:1px solid var(--br-line);padding-top:12px;}",
-    ".bradar-editor-toggle{display:inline-flex;align-items:center;gap:6px;background:none;border:none;",
-    "  padding:2px 0;font-family:var(--br-body);font-size:13px;font-weight:600;color:var(--br-link);",
-    "  cursor:pointer;}",
-    ".bradar-editor-toggle:hover{color:var(--br-link-deep);}",
-    ".bradar-editor-toggle svg{transition:transform .25s;}",
-    ".bradar-editor-toggle.bradar-open svg{transform:rotate(90deg);}",
-    ".bradar-editor-body{overflow:hidden;transition:max-height .3s ease;}",
-    ".bradar-editor-caption{font-size:11.5px;font-weight:500;color:var(--br-mut);margin:10px 0 8px;}",
-    ".bradar-editor-scroll{overflow-x:auto;}",
-    ".bradar-editor table{border-collapse:collapse;font-size:12.5px;}",
-    ".bradar-editor th{font-size:11.5px;font-weight:600;",
-    "  color:var(--br-mut);text-align:left;padding:4px 9px;white-space:nowrap;}",
-    ".bradar-editor td{padding:4px 9px;}",
-    ".bradar-editor tbody tr:hover{background:#f4f4f4;}",
-    ".bradar-editor td:first-child{white-space:nowrap;color:var(--br-ink);font-weight:600;}",
-    ".bradar-editor input{width:62px;padding:5px 7px;border:1px solid var(--br-line);border-radius:4px;",
-    "  font-family:var(--br-head);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;",
-    "  color:var(--br-ink);background:#fff;transition:border-color .15s,box-shadow .15s;}",
-    ".bradar-editor input:hover{border-color:#c9ccd1;}",
-    ".bradar-editor input:focus{outline:none;border-color:var(--br-accent);",
-    "  box-shadow:0 0 0 3px rgba(0,134,255,.16);}",
+    /* showPanel:false — chart + legend only, no comparison matrix (dense grids) */
+    ".bradar-main-compact{flex-direction:column;align-items:center;gap:0;}",
+    ".bradar-main-compact .bradar-chart-wrap{flex:0 1 auto;min-width:0;width:100%;}",
+    ".bradar-legend-under{justify-content:center;margin-top:10px;}",
+    /* compact:true — tightened type/spacing for small-multiple grids */
+    ".bradar-compact{padding:18px 18px 16px;}",
+    ".bradar-compact .bradar-eyebrow{font-size:11px;margin-bottom:6px;}",
+    ".bradar-compact .bradar-title{font-size:15.5px;margin-bottom:2px;}",
+    ".bradar-compact .bradar-subtitle{font-size:11.5px;margin-bottom:12px;}",
+    ".bradar-compact .bradar-chip{font-size:11px;padding:5px 10px 5px 8px;gap:5px;}",
+    ".bradar-compact .bradar-axis-label{font-size:10.5px;}",
+    ".bradar-compact .bradar-tick{font-size:8.5px;}",
     "@media (max-width:1024px){",
     "  .bradar-root{padding:22px 20px 20px;}",
     "  .bradar-main{gap:20px;}",
@@ -165,7 +164,7 @@
     "  .bradar-subtitle{font-size:12.5px;margin:0 0 14px;}",
     "  .bradar-main{gap:16px;}",
     "  .bradar-chart-wrap{min-width:0;flex-basis:100%;}",
-    "  .bradar-panel{min-width:0;flex-basis:100%;margin-top:0;}",
+    "  .bradar-right{min-width:0;flex-basis:100%;}",
     "  .bradar-legend{gap:6px;}",
     "  .bradar-chip{font-size:12px;padding:6px 12px 6px 9px;}",
     "  .bradar-panel-title{font-size:14.5px;}",
@@ -173,7 +172,6 @@
     "@media (max-width:420px){",
     "  .bradar-bar-name{flex-basis:66px;font-size:11px;}",
     "  .bradar-bar-val{flex-basis:30px;font-size:12.5px;}",
-    "  .bradar-editor th,.bradar-editor td{padding:4px 6px;}",
     "}",
     "@media (prefers-reduced-motion: no-preference){",
     "  .bradar-bar-fill{transition:width .5s cubic-bezier(.22,.8,.36,1);}",
@@ -238,20 +236,39 @@
     cfg.axes = cfg.axes.map(function (a) {
       return typeof a === "string" ? { label: a, description: "" } : { label: a.label, description: a.description || "" };
     });
+    function clampAxes(values) {
+      var v = (values || []).slice(0, cfg.axes.length);
+      while (v.length < cfg.axes.length) v.push(null);
+      // null / undefined / "" = no data for that metric; the point is skipped
+      return v.map(function (n) {
+        if (n === null || n === undefined || n === "") return null;
+        var num = +n;
+        return isNaN(num) ? null : Math.max(0, Math.min(cfg.maxValue, num));
+      });
+    }
+
     cfg.series = cfg.series.map(function (s, i) {
       var d = DEFAULTS.series[i] || DEFAULTS.series[0];
-      var values = (s.values || []).slice(0, cfg.axes.length);
-      while (values.length < cfg.axes.length) values.push(null);
+      // A series is either one polygon (`values`) or several sharing one color/legend
+      // entry (`groups: [{label, values}, ...]`) — e.g. one line per product line,
+      // all in the company's color, overlaid on shared axes.
+      var rawGroups = (s.groups && s.groups.length) ? s.groups : [{ label: null, values: s.values }];
+      var groups = rawGroups.map(function (g) {
+        return { label: g.label || null, values: clampAxes(g.values) };
+      });
+      // Aggregate average across groups per axis — drives the legend/comparison
+      // panel regardless of how many polygons this company draws on the chart.
+      var avgValues = cfg.axes.map(function (_, ai) {
+        var have = groups.map(function (g) { return g.values[ai]; }).filter(function (v) { return v != null; });
+        if (!have.length) return null;
+        return have.reduce(function (a, b) { return a + b; }, 0) / have.length;
+      });
       return {
         name: s.name || d.name,
         color: s.color || d.color,
         marker: s.marker || ["circle", "square", "triangle", "diamond"][i % 4],
-        // null / undefined / "" = no data for that metric; the point is skipped
-        values: values.map(function (v) {
-          if (v === null || v === undefined || v === "") return null;
-          var n = +v;
-          return isNaN(n) ? null : Math.max(0, Math.min(cfg.maxValue, n));
-        })
+        groups: groups,
+        values: avgValues
       };
     });
     return cfg;
@@ -264,11 +281,11 @@
     var cfg = normalizeConfig(userConfig);
     injectStyles(cfg.webFonts);
 
-    var uid = "br" + (++UID);
     var selected = cfg.selected == null ? null
       : Math.max(0, Math.min(cfg.axes.length - 1, cfg.selected));
     var visible = cfg.series.map(function () { return true; });
-    var disp = cfg.series.map(function (s) { return s.values.slice(); }); // animated display values
+    // animated display values, per series per group: disp[si][gi][ai]
+    var disp = cfg.series.map(function (s) { return s.groups.map(function (g) { return g.values.slice(); }); });
     var tweenRaf = null;
 
     var root = htmlEl("div", "bradar-root", null);
@@ -296,21 +313,26 @@
 
     function mount() {
       root.textContent = "";
+      root.className = "bradar-root" + (cfg.compact ? " bradar-compact" : "");
       if (cfg.eyebrow) htmlEl("p", "bradar-eyebrow", root, cfg.eyebrow);
-      htmlEl("p", "bradar-title", root, cfg.title);
-      htmlEl("p", "bradar-subtitle", root, cfg.subtitle);
-      refs.legend = htmlEl("div", "bradar-legend", root);
-      var main = htmlEl("div", "bradar-main", root);
+      if (cfg.title) htmlEl("h3", "bradar-title", root, cfg.title);
+      if (cfg.subtitle) htmlEl("p", "bradar-subtitle", root, cfg.subtitle);
+      var main = htmlEl("div", "bradar-main" + (cfg.showPanel ? "" : " bradar-main-compact"), root);
       refs.chartWrap = htmlEl("div", "bradar-chart-wrap", main);
       refs.tooltip = htmlEl("div", "bradar-tooltip", refs.chartWrap);
-      refs.panel = htmlEl("div", "bradar-panel", main);
-      refs.editor = cfg.editable ? htmlEl("div", "bradar-editor", root) : null;
+      if (cfg.showPanel) {
+        var rightCol = htmlEl("div", "bradar-right", main);
+        refs.legend = htmlEl("div", "bradar-legend", rightCol);
+        refs.panel = htmlEl("div", "bradar-panel", rightCol);
+      } else {
+        refs.legend = htmlEl("div", "bradar-legend bradar-legend-under", main);
+        refs.panel = null;
+      }
       buildLegend();
       buildChart();
       setGeometry();
       applySelection();
       renderPanel();
-      buildEditor();
     }
 
     // ---- legend (chips toggle series; hovering spotlights one) ----
@@ -334,14 +356,15 @@
       visible[si] = !visible[si];
       refs.chips[si].classList.toggle("bradar-off", !visible[si]);
       refs.chips[si].setAttribute("aria-pressed", String(visible[si]));
-      refs.seriesLayers[si].classList.toggle("bradar-hidden", !visible[si]);
+      refs.seriesLayers[si].forEach(function (L) { L.layer.classList.toggle("bradar-hidden", !visible[si]); });
       spotlight(si, false);
       renderPanel();
     }
 
     function spotlight(si, on) {
       cfg.series.forEach(function (_, i) {
-        refs.seriesLayers[i].classList.toggle("bradar-dim", on && visible[si] && visible[i] && i !== si);
+        var dim = on && visible[si] && visible[i] && i !== si;
+        refs.seriesLayers[i].forEach(function (L) { L.layer.classList.toggle("bradar-dim", dim); });
       });
     }
 
@@ -353,17 +376,6 @@
         role: "img", "aria-label": cfg.title });
       refs.chartWrap.insertBefore(svg, refs.tooltip);
       refs.svg = svg;
-
-      var defs = svgEl("defs", {}, svg);
-      cfg.series.forEach(function (s, si) {
-        var g = svgEl("radialGradient", { id: uid + "-g" + si, gradientUnits: "userSpaceOnUse",
-          cx: CX, cy: CY, r: R }, defs);
-        svgEl("stop", { offset: "0", "stop-color": s.color, "stop-opacity": "0.03" }, g);
-        svgEl("stop", { offset: "1", "stop-color": s.color, "stop-opacity": "0.17" }, g);
-      });
-      var f = svgEl("filter", { id: uid + "-glow", x: "-30%", y: "-30%", width: "160%", height: "160%" }, defs);
-      svgEl("feDropShadow", { dx: 0, dy: 2, stdDeviation: 5,
-        "flood-color": cfg.series[0].color, "flood-opacity": 0.28 }, f);
 
       // alternating ring bands, outer → inner, then hairline ring strokes
       var ring;
@@ -388,38 +400,45 @@
 
       refs.halo = svgEl("circle", { r: 14, "class": "bradar-halo" }, svg);
 
-      // series layers — competitors first, Baya (series 0) drawn last, on top
+      // series layers — competitors first, Baya (series 0) drawn last, on top.
+      // Each series draws one polygon per group; a single-group series (the common
+      // case) looks like before, a multi-group "portfolio" series draws one thin,
+      // unfilled line per group, all sharing the company's color, no point markers
+      // (matches a dense multi-line comparison rather than a single filled shape).
       refs.seriesLayers = [];
       var order = cfg.series.map(function (_, idx) { return idx; }).reverse();
       order.forEach(function (si) {
         var s = cfg.series[si];
-        var layer = svgEl("g", { "class": "bradar-series-layer bradar-series-anim" }, svg);
-        if (si === 0) layer.setAttribute("filter", "url(#" + uid + "-glow)");
-        var fill = svgEl("polygon", { fill: "url(#" + uid + "-g" + si + ")", stroke: "none" }, layer);
-        var stroke = svgEl("polygon", { fill: "none", stroke: s.color,
-          "stroke-width": si === 0 ? 2.5 : 2, "stroke-linejoin": "round" }, layer);
-        var markers = s.values.map(function () {
-          return svgEl("path", { d: markerPath(s.marker, 4.6), fill: s.color,
-            stroke: "#ffffff", "stroke-width": 1.5 }, layer);
+        var multi = s.groups.length > 1;
+        refs.seriesLayers[si] = s.groups.map(function (g) {
+          var layer = svgEl("g", { "class": "bradar-series-layer bradar-series-anim" }, svg);
+          var fill = svgEl("polygon", { fill: multi ? "none" : s.color,
+            "fill-opacity": multi ? "0" : (si === 0 ? "0.14" : "0.08"), stroke: "none" }, layer);
+          var stroke = svgEl("polygon", { fill: "none", stroke: s.color,
+            "stroke-width": multi ? (si === 0 ? 1.75 : 1.25) : (si === 0 ? 2.5 : 2),
+            "stroke-opacity": multi ? "0.8" : "1", "stroke-linejoin": "round" }, layer);
+          var markers = multi ? [] : g.values.map(function () {
+            return svgEl("path", { d: markerPath(s.marker, 4.6), fill: s.color,
+              stroke: "#ffffff", "stroke-width": 1.5 }, layer);
+          });
+          return { layer: layer, _fill: fill, _stroke: stroke, _markers: markers };
         });
-        refs.seriesLayers[si] = layer;
-        refs.seriesLayers[si]._fill = fill;
-        refs.seriesLayers[si]._stroke = stroke;
-        refs.seriesLayers[si]._markers = markers;
       });
 
       // hover/click targets for every data point (bigger than the mark)
-      refs.hits = cfg.series.map(function (sr, si) {
-        return sr.values.map(function (_, ai) {
-          var hit = svgEl("circle", { r: 13, fill: "transparent", "class": "bradar-hit" }, svg);
-          hit.addEventListener("mousemove", function (ev) {
-            if (!visible[si]) return;
-            var box = refs.chartWrap.getBoundingClientRect();
-            showTooltip(ev.clientX - box.left, ev.clientY - box.top, si, ai);
+      refs.hits = cfg.series.map(function (s, si) {
+        return s.groups.map(function (g, gi) {
+          return g.values.map(function (_, ai) {
+            var hit = svgEl("circle", { r: 13, fill: "transparent", "class": "bradar-hit" }, svg);
+            hit.addEventListener("mousemove", function (ev) {
+              if (!visible[si]) return;
+              var box = refs.chartWrap.getBoundingClientRect();
+              showTooltip(ev.clientX - box.left, ev.clientY - box.top, si, gi, ai);
+            });
+            hit.addEventListener("mouseleave", hideTooltip);
+            hit.addEventListener("click", function () { select(ai); });
+            return hit;
           });
-          hit.addEventListener("mouseleave", hideTooltip);
-          hit.addEventListener("click", function () { select(ai); });
-          return hit;
         });
       });
 
@@ -454,38 +473,42 @@
 
     // ---- geometry from animated display values (null = no data, vertex skipped) ----
     function setGeometry() {
-      cfg.series.forEach(function (_, si) {
-        var layer = refs.seriesLayers[si];
-        var ptsArr = [];
-        disp[si].forEach(function (v, ai) {
-          if (v == null) return;
-          ptsArr.push(pt(ai, rTo(v)).map(function (n) { return n.toFixed(1); }).join(","));
-        });
-        var points = ptsArr.join(" ");
-        layer._fill.setAttribute("points", ptsArr.length >= 3 ? points : "");
-        layer._stroke.setAttribute("points", points); // 2 points renders as a line, 1 as nothing
-        disp[si].forEach(function (v, ai) {
-          var marker = layer._markers[ai], hit = refs.hits[si][ai];
-          if (v == null) {
-            marker.style.display = "none";
-            hit.style.display = "none";
-            return;
-          }
-          marker.style.display = "";
-          hit.style.display = "";
-          var p = pt(ai, rTo(v));
-          marker.setAttribute("transform",
-            "translate(" + p[0].toFixed(1) + "," + p[1].toFixed(1) + ")");
-          hit.setAttribute("cx", p[0].toFixed(1));
-          hit.setAttribute("cy", p[1].toFixed(1));
+      cfg.series.forEach(function (s, si) {
+        s.groups.forEach(function (_, gi) {
+          var layer = refs.seriesLayers[si][gi];
+          var ptsArr = [];
+          disp[si][gi].forEach(function (v, ai) {
+            if (v == null) return;
+            ptsArr.push(pt(ai, rTo(v)).map(function (n) { return n.toFixed(1); }).join(","));
+          });
+          var points = ptsArr.join(" ");
+          layer._fill.setAttribute("points", ptsArr.length >= 3 ? points : "");
+          layer._stroke.setAttribute("points", points); // 2 points renders as a line, 1 as nothing
+          disp[si][gi].forEach(function (v, ai) {
+            var marker = layer._markers[ai], hit = refs.hits[si][gi][ai];
+            if (v == null) {
+              if (marker) marker.style.display = "none";
+              hit.style.display = "none";
+              return;
+            }
+            if (marker) marker.style.display = "";
+            hit.style.display = "";
+            var p = pt(ai, rTo(v));
+            if (marker) {
+              marker.setAttribute("transform",
+                "translate(" + p[0].toFixed(1) + "," + p[1].toFixed(1) + ")");
+            }
+            hit.setAttribute("cx", p[0].toFixed(1));
+            hit.setAttribute("cy", p[1].toFixed(1));
+          });
         });
       });
     }
 
     function tweenTo() {
       if (tweenRaf) cancelAnimationFrame(tweenRaf);
-      var from = disp.map(function (row) { return row.slice(); });
-      var to = cfg.series.map(function (s) { return s.values.slice(); });
+      var from = disp.map(function (groups) { return groups.map(function (row) { return row.slice(); }); });
+      var to = cfg.series.map(function (s) { return s.groups.map(function (g) { return g.values.slice(); }); });
       updatePanelValues(); // bars animate via CSS in parallel with the radar tween
       if (REDUCED) {
         disp = to; setGeometry();
@@ -496,11 +519,13 @@
         if (t0 === null) t0 = ts;
         var t = Math.min(1, (ts - t0) / DUR);
         var e = 1 - Math.pow(1 - t, 3); // cubic ease-out
-        disp = from.map(function (row, si) {
-          return row.map(function (v, ai) {
-            var tv = to[si][ai];
-            if (v == null || tv == null) return tv; // no tween into/out of "no data"
-            return v + (tv - v) * e;
+        disp = from.map(function (groups, si) {
+          return groups.map(function (row, gi) {
+            return row.map(function (v, ai) {
+              var tv = to[si][gi][ai];
+              if (v == null || tv == null) return tv; // no tween into/out of "no data"
+              return v + (tv - v) * e;
+            });
           });
         });
         setGeometry();
@@ -511,15 +536,15 @@
     }
 
     // ---- tooltip ----
-    function showTooltip(x, y, si, ai) {
-      var s = cfg.series[si];
+    function showTooltip(x, y, si, gi, ai) {
+      var s = cfg.series[si], g = s.groups[gi];
       refs.tooltip.textContent = "";
       var nameRow = htmlEl("div", "bradar-tt-name", refs.tooltip);
       var dot = htmlEl("span", "bradar-tt-dot", nameRow);
       dot.style.background = s.color;
-      nameRow.appendChild(document.createTextNode(s.name));
+      nameRow.appendChild(document.createTextNode(g.label ? s.name + " — " + g.label : s.name));
       var metric = htmlEl("div", "bradar-tt-metric", refs.tooltip, cfg.axes[ai].label + " ");
-      htmlEl("b", "", metric, fmt(s.values[ai]));
+      htmlEl("b", "", metric, fmt(g.values[ai]));
       refs.tooltip.style.left = x + "px";
       refs.tooltip.style.top = y + "px";
       refs.tooltip.classList.add("bradar-on");
@@ -561,7 +586,9 @@
 
     // ---- side-by-side panel (a metric, or the overall average when nothing is selected) ----
     function renderPanel() {
+      if (!refs.panel) return;
       refs.panel.textContent = "";
+      htmlEl("p", "bradar-panel-caption", refs.panel, "Score comparison matrix");
       if (selected != null) {
         var ax = cfg.axes[selected];
         htmlEl("p", "bradar-panel-title", refs.panel, ax.label + " — side by side");
@@ -631,74 +658,6 @@
       badge.appendChild(small);
     }
 
-    // ---- live value editor ----
-    function buildEditor() {
-      if (!refs.editor) return;
-      refs.editor.textContent = "";
-      var toggle = htmlEl("button", "bradar-editor-toggle bradar-open", refs.editor);
-      toggle.type = "button";
-      var chev = document.createElementNS(SVG_NS, "svg");
-      chev.setAttribute("width", "10"); chev.setAttribute("height", "10"); chev.setAttribute("viewBox", "0 0 10 10");
-      svgEl("path", { d: "M3 1.5L7 5L3 8.5", fill: "none", stroke: "currentColor",
-        "stroke-width": 1.8, "stroke-linecap": "round", "stroke-linejoin": "round" }, chev);
-      toggle.appendChild(chev);
-      toggle.appendChild(document.createTextNode("Adjust values"));
-      var body = htmlEl("div", "bradar-editor-body", refs.editor);
-      htmlEl("p", "bradar-editor-caption", body,
-        "Plug in your own values (0–" + fmt(cfg.maxValue) + ", higher is better) — the chart animates live. " +
-        "Leave a cell blank for “no data”; that point is skipped.");
-      var scroll = htmlEl("div", "bradar-editor-scroll", body);
-      var table = htmlEl("table", "", scroll);
-      var hr = htmlEl("tr", "", htmlEl("thead", "", table));
-      htmlEl("th", "", hr, "");
-      cfg.axes.forEach(function (ax) { htmlEl("th", "", hr, ax.label); });
-      var tbody = htmlEl("tbody", "", table);
-      refs.inputs = [];
-      cfg.series.forEach(function (s, si) {
-        var tr = htmlEl("tr", "", tbody);
-        var td0 = htmlEl("td", "", tr);
-        td0.appendChild(legendMarkerSvg(s, 13));
-        td0.appendChild(document.createTextNode(" " + s.name));
-        refs.inputs.push(s.values.map(function (val, ai) {
-          var td = htmlEl("td", "", tr);
-          var input = document.createElement("input");
-          input.type = "number";
-          input.min = "0"; input.max = String(cfg.maxValue); input.step = "0.5";
-          input.value = val == null ? "" : fmt(val);
-          input.placeholder = "—";
-          input.setAttribute("aria-label", s.name + " " + cfg.axes[ai].label);
-          input.addEventListener("input", function () {
-            if (input.value === "") {
-              cfg.series[si].values[ai] = null; // blank = no data
-              tweenTo();
-              return;
-            }
-            var v = Math.max(0, Math.min(cfg.maxValue, parseFloat(input.value)));
-            if (isNaN(v)) return;
-            cfg.series[si].values[ai] = v;
-            tweenTo();
-          });
-          td.appendChild(input);
-          return input;
-        }));
-      });
-      var open = true;
-      function setOpen(o) {
-        open = o;
-        toggle.classList.toggle("bradar-open", open);
-        body.style.maxHeight = open ? body.scrollHeight + "px" : "0";
-      }
-      toggle.addEventListener("click", function () { setOpen(!open); });
-      body.style.maxHeight = body.scrollHeight + "px";
-    }
-
-    function syncEditor() {
-      if (!refs.inputs) return;
-      cfg.series.forEach(function (s, si) {
-        s.values.forEach(function (v, ai) { refs.inputs[si][ai].value = v == null ? "" : fmt(v); });
-      });
-    }
-
     mount();
 
     return {
@@ -709,14 +668,18 @@
         cfg = normalizeConfig(merged);
         selected = selected == null ? null : Math.max(0, Math.min(cfg.axes.length - 1, selected));
         visible = cfg.series.map(function () { return true; });
-        disp = cfg.series.map(function (s) { return s.values.slice(); });
+        disp = cfg.series.map(function (s) { return s.groups.map(function (g) { return g.values.slice(); }); });
         mount();
       },
+      // Sets a value in the series' first (or only) group and refreshes the
+      // company's aggregate average that drives the legend/comparison panel.
       setValue: function (seriesIdx, axisIdx, value) {
         var v = (value === null || value === undefined || value === "") ? null
           : Math.max(0, Math.min(cfg.maxValue, +value || 0));
-        cfg.series[seriesIdx].values[axisIdx] = v;
-        syncEditor();
+        var s = cfg.series[seriesIdx];
+        s.groups[0].values[axisIdx] = v;
+        var have = s.groups.map(function (g) { return g.values[axisIdx]; }).filter(function (n) { return n != null; });
+        s.values[axisIdx] = have.length ? have.reduce(function (a, b) { return a + b; }, 0) / have.length : null;
         tweenTo();
       },
       select: select,
