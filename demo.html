@@ -3,35 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Baya Systems — competitive radar, full portfolio</title>
+  <title>Baya vs its competitors — single chart demo</title>
   <style>
-    html, body { background: #fafafa; margin: 0; }
-    body {
-      min-height: 100vh;
-      box-sizing: border-box;
-      padding: clamp(1rem, 0.5rem + 2.1vw, 2.5rem);
-      font-family: "Manrope", "Century Gothic", system-ui, -apple-system, "Segoe UI", sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    #radar { width: 100%; max-width: 1040px; }
-
-    /* Desktop/tablet: fit the whole widget into one viewport height — chart on
-       the left, legend + matrix panel stacked on the right. Below this the
-       widget's own responsive rules stack chart/legend/panel full-width, so we
-       drop the fixed height and let the page scroll normally instead. */
-    @media (min-width: 768px) {
-      html, body { height: 100%; }
-      body { height: 100vh; overflow: hidden; }
-      #radar { height: 100%; }
-      #radar .bradar-root { height: 100%; display: flex; flex-direction: column; }
-      #radar .bradar-main { flex: 1 1 auto; min-height: 0; align-items: stretch; }
-      #radar .bradar-chart-wrap { display: flex; align-items: center; justify-content: center; }
-      #radar .bradar-chart { width: auto; height: 100%; max-width: 100%; }
-      #radar .bradar-right { max-height: 100%; }
-      #radar .bradar-panel { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
-    }
+    body { background: #ffffff; margin: 0; padding: 32px; font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif; }
   </style>
 </head>
 <body>
@@ -39,42 +13,13 @@
 
   <script src="baya-radar.js"></script>
   <script>
-    // ---------------------------------------------------------------------
-    // One radar, ten product lines per company. Each company (Baya + two
-    // competitors + in-house) draws one thin line per product line, all in
-    // that company's color, overlaid on the same five axes — so the shape
-    // and density of each company's "cloud" of lines tells the story, and
-    // the side panel's average is the tidy summary of that cloud.
-    //
-    // All numbers are set here in code — there is no in-browser editor.
-    // Edit a `values` array below (order matches `axes`), or drive it from
-    // your own script via chart.setValue(seriesIndex, axisIndex, value) or
-    // chart.update({ series: [...] }).
-    //
-    // *** PLACEHOLDER DATA *** — every score below is illustrative.
-    // Replace with real competitive numbers before this page goes live.
-    // Product lines 9 & 10 are still pending a name/axes fit from Rakshan.
-    // ---------------------------------------------------------------------
-
-    var PRODUCT_LINES = [
-      'WeaverPro', 'CacheStudio', 'FabricStudio', 'WeaveIP', 'NeuraScale',
-      'Custom Fabric', 'Non-Coherent Fabric', 'Coherent Fabric',
-      'Product Line 9', 'Product Line 10'
-    ];
-
-    function groups(valuesPerLine) {
-      return PRODUCT_LINES.map(function (label, i) {
-        return { label: label, values: valuesPerLine[i] };
-      });
-    }
-
+    // Replace the placeholder values below with real scores (0-10, higher = better).
+    // For metrics where a LOWER raw number is better (latency, silicon area),
+    // convert to a score first, e.g. 10 = best-in-class.
+    // Use null where there is no data — that point is skipped on the radar.
     var chart = BayaRadar.create('#radar', {
-      eyebrow: 'Product Portfolio',
-      title: 'Competitive positioning across the Baya IP stack',
-      subtitle: 'One line per product line, ten in all — WeaverPro, CacheStudio, FabricStudio, ' +
-        'WeaveIP, NeuraScale, Custom Fabric, Non-Coherent Fabric, Coherent Fabric, and two more ' +
-        'pending. Scores 0–10, higher is better. Click a corner for one metric; hover a company ' +
-        'in the legend to spotlight its ten lines.',
+      title: 'Baya vs its competitors',
+      subtitle: 'Scores 0–10, higher is better. Click a corner for one metric; click it again for the overall average.',
       axes: [
         { label: 'Latency',                 description: 'Higher score = lower latency' },
         { label: 'Power Efficiency',        description: 'Higher score = better perf/W' },
@@ -83,91 +28,17 @@
         { label: 'Physical Design Closure', description: 'Higher score = easier timing closure' }
       ],
       series: [
-        {
-          name: 'Baya Systems', color: '#0086FF', marker: 'circle',
-          groups: groups([
-            [8.5, 8,   9,   7.5, 9  ],  // WeaverPro
-            [9,   8.5, 8,   8,   8.5],  // CacheStudio
-            [8,   9,   8.5, 7.5, 8  ],  // FabricStudio
-            [9,   8,   9.5, 8.5, 8  ],  // WeaveIP
-            [9.5, 9,   9,   8,   8.5],  // NeuraScale
-            [8,   8.5, 8,   9,   7.5],  // Custom Fabric
-            [8.5, 7.5, 9,   8,   8  ],  // Non-Coherent Fabric
-            [9,   8,   8.5, 8.5, 9  ],  // Coherent Fabric
-            [7.5, 8,   7.5, 8,   7.5],  // Product Line 9 (placeholder)
-            [8,   7.5, 8,   7.5, 8  ]   // Product Line 10 (placeholder)
-          ])
-        },
-        {
-          name: 'Competitor A', color: '#EE5023', marker: 'square',
-          groups: groups([
-            [6,   6.5, 5.5, 6,   6  ],
-            [6.5, 6,   6,   5.5, 6.5],
-            [5.5, 6,   6.5, 6,   5.5],
-            [6,   5.5, 6,   6.5, 6  ],
-            [6.5, 6,   5.5, 6,   6.5],
-            [6,   6.5, 6,   5.5, 6  ],
-            [6.5, 6,   6.5, 6,   5.5],
-            [6,   5.5, 6,   6.5, 6  ],
-            [6,   6,   6,   6,   6  ],
-            [6,   6,   6,   6,   6  ]
-          ])
-        },
-        {
-          name: 'Competitor B', color: '#09DEAB', marker: 'triangle',
-          groups: groups([
-            [5.5, 6,   6.5, 5.5, 6  ],
-            [6,   5.5, 6,   6,   5.5],
-            [6.5, 6,   5.5, 6,   6  ],
-            [5.5, 6.5, 6,   5.5, 6  ],
-            [6,   6,   6.5, 6,   5.5],
-            [6.5, 5.5, 6,   6,   6  ],
-            [6,   6,   5.5, 6.5, 6  ],
-            [5.5, 6,   6,   6,   6.5],
-            [6,   6,   6,   6,   6  ],
-            [6,   6,   6,   6,   6  ]
-          ])
-        },
-        {
-          name: 'In-house', color: '#0000AD', marker: 'diamond',
-          groups: groups([
-            [6,   5.5, 6,   6,   5.5],
-            [5.5, 6,   5.5, 6,   6  ],
-            [6,   6,   6,   5.5, 6  ],
-            [5.5, 5.5, 6,   6,   5.5],
-            [6,   6,   5.5, 5.5, 6  ],
-            [5.5, 6,   6,   6,   5.5],
-            [6,   5.5, 5.5, 6,   6  ],
-            [6,   6,   6,   5.5, 5.5],
-            [5.5, 5.5, 5.5, 5.5, 5.5],
-            [5.5, 5.5, 5.5, 5.5, 5.5]
-          ])
-        }
+        { name: 'Baya Systems', color: '#0086ff', marker: 'circle',   values: [9, 8.5, 9, 8, 9.5] },
+        { name: 'Competitor A', color: '#ee5023', marker: 'square',   values: [6, 5.5, 7, 5, 4]   },
+        { name: 'Competitor B', color: '#07a37e', marker: 'triangle', values: [5, 6.5, 5.5, 6.5, 5] },
+        { name: 'In-house',     color: '#3d4148', marker: 'triangle-down', values: [7, 6, null, 7.5, 6.5] }
       ],
-      maxValue: 10,
-      showPanel: true
+      maxValue: 10
     });
-  </script>
 
-  <script>
-    // WordPress / iframe embedding: report our rendered height to the parent
-    // window so a listener on the host page (see README) can size the
-    // <iframe> to fit — no fixed height or internal scrollbars needed.
-    (function () {
-      if (window.parent === window) return; // not embedded in an iframe
-      function postHeight() {
-        window.parent.postMessage(
-          { source: 'baya-radar', height: document.body.scrollHeight },
-          '*'
-        );
-      }
-      window.addEventListener('load', postHeight);
-      if (typeof ResizeObserver !== 'undefined') {
-        new ResizeObserver(postHeight).observe(document.body);
-      } else {
-        window.addEventListener('resize', postHeight);
-      }
-    })();
+    // Values can also be changed from code:
+    //   chart.setValue(0, 2, 9.5);          // series index, axis index, value
+    //   chart.update({ series: [...] });    // replace everything at once
   </script>
 </body>
 </html>

@@ -1,0 +1,6 @@
+.DS_Store
+
+# Internal reference material — not part of the published app
+/baya-design-system.md
+/reference-images/
+/demo-video/

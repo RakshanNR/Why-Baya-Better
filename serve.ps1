@@ -1,4 +1,4 @@
-$root = "C:\Users\andre\OneDrive\Documents\Claude Code\BayaRadar"
+$root = $PSScriptRoot
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:8321/")
 $listener.Start()
@@ -8,7 +8,7 @@ while ($listener.IsListening) {
   try {
     $ctx = $listener.GetContext()
     $path = $ctx.Request.Url.AbsolutePath.TrimStart("/")
-    if ([string]::IsNullOrEmpty($path)) { $path = "demo.html" }
+    if ([string]::IsNullOrEmpty($path)) { $path = "index.html" }
     $file = Join-Path $root $path
     $resolved = [System.IO.Path]::GetFullPath($file)
     if ($resolved.StartsWith($root) -and (Test-Path $resolved -PathType Leaf)) {
