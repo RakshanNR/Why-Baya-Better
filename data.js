@@ -14,8 +14,8 @@
 
    Each values row is ordered: [Latency, Power, Bandwidth, Area, PD Closure]
    and the rows are ordered to match `companies` below:
-       row 0 = Baya Systems, row 1 = Competitor A,
-       row 2 = Competitor B, row 3 = In-house
+       row 0 = Baya Systems, row 1 = Alternative A,
+       row 2 = Alternative B, row 3 = In-house
 
    Each product may also carry an optional note, shown under its name in the
    scroll story (otherwise a line is generated from the data):
@@ -36,8 +36,8 @@ var BAYA_PORTFOLIO = {
 
   companies: [
     { name: "Baya Systems", color: "#0086ff", marker: "circle"   },
-    { name: "Competitor A", color: "#ee5023", marker: "square"   },
-    { name: "Competitor B", color: "#07a37e", marker: "triangle" },
+    { name: "Alternative A", color: "#ee5023", marker: "square"   },
+    { name: "Alternative B", color: "#07a37e", marker: "triangle" },
     { name: "In-house",     color: "#3d4148", marker: "triangle-down" }
   ],
 
@@ -46,8 +46,8 @@ var BAYA_PORTFOLIO = {
       name: "Product 1",
       values: [
         [9, 8.5, 9, 8, 9.5],     // Baya Systems
-        [6, 5.5, 7, 5, 4],       // Competitor A
-        [5, 6.5, 5.5, 6.5, 5],   // Competitor B
+        [6, 5.5, 7, 5, 4],       // Alternative A
+        [5, 6.5, 5.5, 6.5, 5],   // Alternative B
         [7, 6, null, 7.5, 6.5]   // In-house
       ]
     },
@@ -110,7 +110,7 @@ var BAYA_PORTFOLIO = {
       values: [
         [8, 8.5, 9, 9.5, 9],
         [7, 6, 5.5, 6.5, 5],
-        [5.5, 9, 6, 5, 6.5],     // Competitor B leads on power here
+        [5.5, 9, 6, 5, 6.5],     // Alternative B leads on power here
         [6, 5.5, 6.5, 7, null]
       ]
     },

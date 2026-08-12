@@ -8,8 +8,8 @@
  *      BayaRadar.create('#radar', {
  *        series: [
  *          { name: 'Baya Systems', color: '#0086ff', marker: 'circle',   values: [9, 8.5, 9, 8, 9.5] },
- *          { name: 'Competitor A', color: '#ee5023', marker: 'square',   values: [6, 5.5, 7, 5, 4]   },
- *          { name: 'Competitor B', color: '#07a37e', marker: 'triangle', values: [5, 6.5, 5.5, 6.5, 5] },
+ *          { name: 'Alternative A', color: '#ee5023', marker: 'square',   values: [6, 5.5, 7, 5, 4]   },
+ *          { name: 'Alternative B', color: '#07a37e', marker: 'triangle', values: [5, 6.5, 5.5, 6.5, 5] },
  *          { name: 'In-house',     color: '#3d4148', marker: 'triangle-down', values: [7, 6, null, 7.5, 6.5] }
  *        ]
  *      });
@@ -61,8 +61,8 @@
     ],
     series: [
       { name: "Baya Systems", color: "#0086ff", marker: "circle", values: [9, 8.5, 9, 8, 9.5] },
-      { name: "Competitor A", color: "#ee5023", marker: "square", values: [6, 5.5, 7, 5, 4] },
-      { name: "Competitor B", color: "#07a37e", marker: "triangle", values: [5, 6.5, 5.5, 6.5, 5] },
+      { name: "Alternative A", color: "#ee5023", marker: "square", values: [6, 5.5, 7, 5, 4] },
+      { name: "Alternative B", color: "#07a37e", marker: "triangle", values: [5, 6.5, 5.5, 6.5, 5] },
       { name: "In-house", color: "#3d4148", marker: "triangle-down", values: [7, 6, null, 7.5, 6.5] }
     ],
     products: null,   // array of {name, values:[rows per series]} switches on multi mode

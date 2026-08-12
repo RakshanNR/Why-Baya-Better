@@ -28,8 +28,8 @@ Data entry is deliberately not part of the page. All scores live in
   name: "Product 3",
   values: [
     [9.5, 8, 9.5, 7.5, 9],   // Baya Systems
-    [5.5, 6.5, 6, 6.5, 5],   // Competitor A
-    [7, 5.5, 7.5, 5, 5.5],   // Competitor B
+    [5.5, 6.5, 6, 6.5, 5],   // Alternative A
+    [7, 5.5, 7.5, 5, 5.5],   // Alternative B
     [null, 6, 6.5, 6, 6]     // In-house
   ]
 }
@@ -46,7 +46,7 @@ Data entry is deliberately not part of the page. All scores live in
   dashboard, reserved for captions).
 
 Two ways to edit: open `data.js` in any editor, or ask Claude Code, e.g.
-*"set Product 4's Competitor A latency to 7"* — then refresh the page.
+*"set Product 4's Alternative A latency to 7"* — then refresh the page.
 
 ## Interaction
 
@@ -76,8 +76,8 @@ Two ways to edit: open `data.js` in any editor, or ask Claude Code, e.g.
   var chart = BayaRadar.create('#radar', {
     series: [
       { name: 'Baya Systems', color: '#0086ff', marker: 'circle',   values: [9, 8.5, 9, 8, 9.5] },
-      { name: 'Competitor A', color: '#ee5023', marker: 'square',   values: [6, 5.5, 7, 5, 4]   },
-      { name: 'Competitor B', color: '#07a37e', marker: 'triangle', values: [5, 6.5, 5.5, 6.5, 5] },
+      { name: 'Alternative A', color: '#ee5023', marker: 'square',   values: [6, 5.5, 7, 5, 4]   },
+      { name: 'Alternative B', color: '#07a37e', marker: 'triangle', values: [5, 6.5, 5.5, 6.5, 5] },
       { name: 'In-house',     color: '#3d4148', marker: 'diamond',  values: [7, 6, null, 7.5, 6.5] }
     ]
   });
@@ -108,8 +108,8 @@ Styled to the **Baya / Chiplet Design System v1.2**:
 - **Type** — Poppins for headings/eyebrows-as-labels, Manrope for body, UI, and data
   (eyebrows use Manrope 700, uppercase, `0.08em` tracking, per the system's `.c-type-eye`
   spec). No text renders below the 12px platform floor, including chart tick labels.
-- **Color** — Baya = Cyber Blue `#0086ff` (brand.primary); Competitor A = Signal Orange
-  `#ee5023` (brand.accent); Competitor B = `#07a37e`, the AA-safe on-light text tint of
+- **Color** — Baya = Cyber Blue `#0086ff` (brand.primary); Alternative A = Signal Orange
+  `#ee5023` (brand.accent); Alternative B = `#07a37e`, the AA-safe on-light text tint of
   Quantum Teal (brand.secondary); In-house = a neutral ink-grey `#3d4148`, deliberately
   outside the brand hue set to read as "internal baseline" rather than a market competitor.
   Series colors never carry body text (chip/legend names stay neutral ink) — only markers,
