@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Baya Systems — Competitive Advantage</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#020408;color:var(--white);font-family:var(--font-base)}
+body{display:flex;justify-content:center;align-items:center;padding:18px;overflow:auto}
+.hero{
+  position:relative;width:min(1800px,100%);min-height:min(980px,calc(100vh - 36px));
+  border:1px solid rgba(0,134,255,.16);border-radius:28px;overflow:hidden;isolation:isolate;
+  background:
+    radial-gradient(ellipse at 31% 47%,rgba(0,134,255,.20),transparent 33%),
+    radial-gradient(ellipse at 79% 25%,rgba(9,222,171,.12),transparent 28%),
+    radial-gradient(ellipse at 74% 88%,rgba(0,0,173,.10),transparent 29%),
+    linear-gradient(135deg,var(--bg0),var(--bg1) 58%,#020813 100%);
+  box-shadow:0 35px 90px rgba(0,0,0,.46),inset 0 1px rgba(255,255,255,.025)
+}
+.hero::before{content:"";position:absolute;inset:0;z-index:-4;background-image:
+ linear-gradient(rgba(0,134,255,.045) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(0,134,255,.045) 1px,transparent 1px);
+ background-size:44px 44px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent 88%)}
+.hero::after{content:"";position:absolute;inset:0;z-index:20;pointer-events:none;box-shadow:inset 0 0 150px rgba(0,0,0,.63)}
+.noise{position:absolute;inset:0;z-index:-3;opacity:.20;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E")}
+.circuit{position:absolute;inset:auto -4% 0 -4%;height:38%;z-index:-2;opacity:.34;
+ background-image:radial-gradient(circle,#3aa0ff 0 1.2px,transparent 1.8px);
+ background-size:22px 22px;mask-image:linear-gradient(to top,#000,transparent)}
+.orbit{position:absolute;left:5%;top:23%;width:57%;aspect-ratio:1;border:1px dashed rgba(0,134,255,.24);border-radius:50%;z-index:-1;animation:orbit 42s linear infinite}
+.orbit::before,.orbit::after{content:"";position:absolute;border-radius:50%;border:1px dotted rgba(9,222,171,.16)}
+.orbit::before{inset:8%}.orbit::after{inset:17%}
+@keyframes orbit{to{transform:rotate(360deg)}}
+
+header{position:relative;z-index:3;padding:42px 54px 10px}
+.eyebrow{font-size:var(--fs-eyebrow);font-weight:var(--fw-eyebrow);letter-spacing:var(--ls-eyebrow);text-transform:uppercase;color:var(--baya-text)}
+h1{margin:8px 0 0;font-size:var(--fs-display);line-height:var(--lh-display);letter-spacing:var(--ls-display);font-weight:var(--fw-display)}
+.subline{margin-top:18px;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;color:var(--muted);font-size:var(--fs-body)}
+.statusDot{width:8px;height:8px;border-radius:50%;background:var(--teal-text);box-shadow:0 0 0 5px rgba(9,222,171,.14),0 0 18px rgba(9,222,171,.6);animation:dotpulse 1.8s ease-in-out infinite}
+@keyframes dotpulse{50%{transform:scale(1.25);opacity:.7}}
+.higher{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;border:1px solid rgba(0,134,255,.22);background:rgba(7,23,41,.52);color:#cfe9ff;font-size:var(--fs-label);font-weight:650}
+.higher b{color:var(--teal-text)}
+
+.layout{position:relative;z-index:3;display:grid;grid-template-columns:minmax(0,1.72fr) minmax(390px,.88fr);gap:28px;padding:16px 42px 42px;min-height:760px}
+.visual{position:relative;min-height:660px;border-radius:24px;overflow:hidden}
+.visual::before{content:"";position:absolute;left:12%;top:12%;width:67%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(0,134,255,.12),transparent 64%);filter:blur(4px)}
+.modeRow{position:absolute;left:16px;top:10px;z-index:8;display:flex;align-items:center;gap:10px}
+.mode{padding:9px 13px;border-radius:999px;border:1px solid rgba(0,134,255,.26);background:rgba(6,18,34,.72);backdrop-filter:blur(14px);font-size:var(--fs-label);color:var(--muted);box-shadow:0 10px 28px rgba(0,0,0,.16)}
+.mode b{color:var(--white)}.mode em{font-style:normal;color:var(--teal-text)}
+.summaryBadge{opacity:0;transform:translateY(-5px);transition:.45s ease;padding:9px 13px;border-radius:999px;background:linear-gradient(90deg,rgba(0,134,255,.18),rgba(9,222,171,.14));border:1px solid rgba(0,134,255,.28);font-size:var(--fs-caption);color:var(--text)}
+.summaryBadge.on{opacity:1;transform:none}
+#radar{position:absolute;left:0;top:44px;width:100%;height:calc(100% - 92px);overflow:visible;filter:drop-shadow(0 18px 30px rgba(0,0,0,.3))}
+.grid{fill:none;stroke:rgba(0,134,255,.15);stroke-width:1}.grid.major{stroke:rgba(0,134,255,.24);stroke-width:1.15}.axis{stroke:rgba(0,134,255,.14);stroke-width:1}.tick{fill:var(--muted-faint);font-size:var(--fs-label)}.axisLabel{fill:var(--white);font-size:var(--fs-chart-label);font-weight:var(--fw-chart-label);letter-spacing:var(--ls-chart-label)}.axisHint{fill:var(--muted-faint);font-size:var(--fs-fine);font-weight:570}
+.ghost{fill:none;stroke:var(--baya-text);stroke-opacity:.13;stroke-width:1.1;filter:drop-shadow(0 0 3px rgba(0,134,255,.2));transition:opacity .6s ease}
+.shapeFill,.shapeLine,.node{transition:all .9s cubic-bezier(.18,.82,.18,1)}
+.shapeLine{fill:none;stroke-linejoin:round;stroke-linecap:round}.bayaLine{filter:drop-shadow(0 0 6px rgba(0,134,255,.55)) drop-shadow(0 0 16px rgba(0,134,255,.24))}
+.legend{position:absolute;left:8%;right:8%;bottom:10px;display:flex;justify-content:center;gap:28px;flex-wrap:wrap;color:var(--muted);font-size:var(--fs-label)}
+.leg{display:flex;align-items:center;gap:8px}.swatch{width:9px;height:9px;border-radius:50%;box-shadow:0 0 10px currentColor}
+
+.side{display:grid;grid-template-rows:minmax(460px,1fr) 238px;gap:20px;align-self:stretch}
+.card{position:relative;border-radius:23px;border:1px solid rgba(0,134,255,.36);background:linear-gradient(145deg,rgba(10,28,50,.82),rgba(4,13,25,.94));box-shadow:inset 0 0 40px rgba(0,134,255,.04),0 18px 48px rgba(0,0,0,.26);overflow:hidden;backdrop-filter:blur(18px)}
+.card::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 0 58%,rgba(9,222,171,.04) 70%,transparent 83%)}
+.metricCard{padding:25px 27px 23px}.cardHead{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid rgba(0,134,255,.14)}
+.cardTitle{font-size:var(--fs-title);font-weight:var(--fw-title)}.micro{margin-top:5px;font-size:var(--fs-caption);color:var(--muted-faint)}.chartIcon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--baya);color:var(--teal-text);box-shadow:0 0 22px rgba(0,134,255,.32),inset 0 0 14px rgba(0,134,255,.12);font-size:var(--fs-title)}
+.metricRows{display:flex;flex-direction:column;gap:20px;margin-top:22px}.metricRow{display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:13px;align-items:center}.metricTop{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}.metricName{font-size:var(--fs-metric-name);color:var(--text)}.rank{font-size:var(--fs-fine);color:var(--muted-faint);white-space:nowrap}.diverging{position:relative;height:12px;border-radius:999px;background:#0a1b2f;overflow:visible;box-shadow:inset 0 0 0 1px rgba(0,134,255,.05)}
+.zero{position:absolute;left:31.25%;top:-4px;bottom:-4px;width:1px;background:rgba(181,214,239,.23)}
+.barPos,.barNeg{position:absolute;top:0;height:100%;width:0;border-radius:999px;transition:width .9s cubic-bezier(.18,.82,.18,1);box-shadow:0 0 13px rgba(0,134,255,.22)}
+.barPos{left:31.25%;background:linear-gradient(90deg,#0086ff,#09deab)}
+.barNeg{right:68.75%;background:linear-gradient(90deg,#ff8a5c,#ee5023)}
+.pct{font-size:var(--fs-metric-pct);line-height:1;font-weight:var(--fw-metric-pct);letter-spacing:var(--ls-metric-pct);text-align:right;font-variant-numeric:tabular-nums;color:var(--baya-text);transition:color .25s}.pct.neg{color:var(--orange-text)}
+.scale{position:absolute;left:27px;right:91px;bottom:16px;display:flex;justify-content:space-between;font-size:var(--fs-micro);color:var(--muted-faint);pointer-events:none}.scale span:nth-child(2){transform:translateX(-4px)}
+
+.avgCard{display:grid;grid-template-columns:145px 1fr;align-items:center;padding:24px 28px;border-color:rgba(0,134,255,.5);box-shadow:0 20px 55px rgba(0,0,0,.28),inset 0 0 35px rgba(0,134,255,.08),0 0 0 1px rgba(0,134,255,.06)}
+.avgCard.summary{animation:finalGlow 2.7s ease-in-out infinite}
+@keyframes finalGlow{50%{border-color:rgba(9,222,171,.7);box-shadow:0 20px 55px rgba(0,0,0,.28),inset 0 0 50px rgba(0,134,255,.12),0 0 38px rgba(9,222,171,.16)}}
+.orb{position:relative;width:116px;height:116px;border-radius:50%;border:1px solid rgba(0,134,255,.48);box-shadow:inset 0 0 38px rgba(0,134,255,.16),0 0 28px rgba(0,134,255,.13)}
+.orb::before,.orb::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(9,222,171,.3)}.orb::before{inset:14%}.orb::after{inset:29%}
+.star{position:absolute;inset:0;display:grid;place-items:center;font-size:38px;color:#eaffff;text-shadow:0 0 20px var(--teal-text);animation:star 2.3s ease-in-out infinite}@keyframes star{50%{transform:scale(1.16) rotate(8deg);filter:brightness(1.45)}}
+.avgCopy{text-align:left}.avgLabel{font-size:var(--fs-title);font-weight:var(--fw-title)}.avgNumber{font-size:var(--fs-stat);line-height:var(--lh-stat);margin-top:8px;font-weight:var(--fw-stat);letter-spacing:var(--ls-stat);background:linear-gradient(90deg,var(--baya) 0%,var(--baya2) 100%);-webkit-background-clip:text;color:var(--baya);color:transparent;filter:drop-shadow(0 0 11px rgba(9,222,171,.3));font-variant-numeric:tabular-nums}.avgNumber.negative{background:linear-gradient(90deg,#ffb199 0%,var(--negative) 100%);-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 11px rgba(238,80,35,.28))}.avgSub{font-size:var(--fs-label);color:var(--muted);margin-top:8px;line-height:1.45}.shine{position:absolute;left:12%;right:8%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--baya),var(--baya2),transparent);box-shadow:0 0 18px var(--baya2);animation:shine 2.5s ease-in-out infinite}@keyframes shine{50%{transform:translateX(5%);filter:brightness(1.6)}}
+
+.controls{position:absolute;z-index:12;left:54px;right:54px;bottom:15px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+.controlLeft,.controlRight{display:flex;align-items:center;gap:8px;pointer-events:auto}.btn{height:36px;min-width:36px;padding:0 12px;border:1px solid rgba(0,134,255,.24);border-radius:10px;background:rgba(5,16,30,.76);color:#dff2ff;font-size:var(--fs-ui);cursor:pointer;backdrop-filter:blur(12px);transition:.2s}.btn:hover{border-color:var(--baya-text);box-shadow:0 0 18px rgba(0,134,255,.2);transform:translateY(-1px)}
+.dots{display:flex;gap:6px;margin-left:5px}.dotnav{width:5px;height:5px;border-radius:50%;background:#365169;transition:.25s}.dotnav.on{background:var(--teal-text);box-shadow:0 0 8px var(--teal-text);transform:scale(1.55)}
+.autoLabel{font-size:var(--fs-fine);color:var(--muted-faint);letter-spacing:.04em;text-transform:uppercase}.progress{position:absolute;left:0;right:0;bottom:0;height:2px;background:rgba(255,255,255,.045);z-index:15}.progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--baya),var(--baya2));box-shadow:0 0 12px var(--baya2)}
+.tooltip{position:absolute;z-index:30;pointer-events:none;opacity:0;transform:translate(-50%,-115%);padding:8px 10px;border-radius:9px;border:1px solid rgba(0,134,255,.26);background:rgba(4,14,27,.94);box-shadow:0 12px 30px rgba(0,0,0,.35);font-size:var(--fs-caption);color:var(--text);transition:opacity .15s;white-space:nowrap}.tooltip b{color:var(--white)}
+
+@media(max-width:1100px){
+ body{padding:0}.hero{border-radius:0;min-height:100vh}.layout{grid-template-columns:1fr;min-height:auto;padding:12px 22px 72px}.visual{min-height:640px}.side{grid-template-columns:1fr 1fr;grid-template-rows:auto}.metricCard{min-height:470px}.avgCard{min-height:240px}.controls{left:25px;right:25px}header{padding:30px 28px 8px}.orbit{width:90%;left:5%;top:25%}
+}
+@media(max-width:760px){
+ .visual{min-height:520px}.side{grid-template-columns:1fr}.avgCard{grid-template-columns:110px 1fr}.orb{width:90px;height:90px}.legend{gap:14px;font-size:11px}.layout{padding-inline:12px}.metricCard{padding:20px}.scale{left:20px;right:82px}.controls{left:15px;right:15px}.autoLabel{display:none}.higher{font-size:11px}.subline{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<section class="hero" id="stage" aria-label="Baya competitive advantage animated visualization">
+  <div class="noise"></div><div class="circuit"></div><div class="orbit"></div>
+  <header>
+    <div class="eyebrow">Product Portfolio</div>
+    <h1>Baya vs its competitors</h1>
+    <div class="subline"><span class="statusDot"></span><span id="subtitle">Design 1 of 10 · competitive profile</span><span class="higher"><b>↑</b> Higher is better on every axis</span></div>
+  </header>
+
+  <div class="layout">
+    <section class="visual">
+      <div class="modeRow"><div class="mode"><b id="modeName">Design 1</b> <em id="modeCount">· 1 / 10</em></div><div class="summaryBadge" id="summaryBadge">10 designs · superimposed</div></div>
+      <svg id="radar" viewBox="0 0 820 680" role="img" aria-label="Radar comparison across five higher-is-better metrics"></svg>
+      <div class="legend">
+        <span class="leg"><i class="swatch" style="background:var(--baya);color:var(--baya)"></i>Baya Systems</span>
+        <span class="leg"><i class="swatch" style="background:var(--a);color:var(--a)"></i>Competitor A</span>
+        <span class="leg"><i class="swatch" style="background:var(--b);color:var(--b)"></i>Competitor B</span>
+        <span class="leg"><i class="swatch" style="background:var(--house);color:var(--house)"></i>In-house</span>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="card metricCard">
+        <div class="cardHead"><div><div class="cardTitle">Buyer benefit by metric</div><div class="micro">Baya vs best alternative · signed %</div></div><div class="chartIcon">▥</div></div>
+        <div class="metricRows" id="metricRows"></div>
+        <div class="scale"><span>−25%</span><span>0</span><span>+55%</span></div>
+      </section>
+      <section class="card avgCard" id="avgCard">
+        <div class="orb"><div class="star">✦</div></div>
+        <div class="avgCopy"><div class="avgLabel" id="avgLabel">Average Buyer Benefit</div><div class="avgNumber" id="avgNumber">+18%</div><div class="avgSub" id="avgSub">Design 1 · average across five metrics</div></div>
+        <div class="shine"></div>
+      </section>
+    </aside>
+  </div>
+
+  <div class="controls">
+    <div class="controlLeft"><button class="btn" id="prev" aria-label="Previous design">‹</button><button class="btn" id="play" aria-label="Pause autoplay">Ⅱ</button><button class="btn" id="next" aria-label="Next design">›</button><div class="dots" id="dots"></div></div>
+    <div class="controlRight"><span class="autoLabel">Autoplay · hover to inspect</span><button class="btn" id="summaryBtn">All designs</button></div>
+  </div>
+  <div class="progress"><span id="prog"></span></div>
+  <div class="tooltip" id="tip"></div>
+</section>
+
+<script>
+(() => {
+const AXES=[
+  {label:"1 / Latency",hint:"lower latency → higher score"},
+  {label:"Power Efficiency",hint:"performance / watt"},
+  {label:"Bandwidth",hint:"effective throughput"},
+  {label:"Area Efficiency",hint:"performance / mm²"},
+  {label:"Design Closure Speed",hint:"faster convergence"}
+];
+const SERIES=[
+  {name:"Baya Systems",color:"#0086ff",fill:"rgba(0,134,255,.17)"},
+  {name:"Competitor A",color:"#d63a20",fill:"rgba(214,58,32,.07)"},
+  {name:"Competitor B",color:"#22a765",fill:"rgba(34,167,101,.07)"},
+  {name:"In-house",color:"#e26a9f",fill:"rgba(226,106,159,.07)"}
+];
+
+/* Deliberately broader variation than the earlier draft.
+   Baya is NOT forced to win every metric: several designs contain real local losses. */
+const designs=[
+ {scores:[[9.5,8.7,9.3,8.9,9.1],[6.0,7.0,6.2,5.3,5.8],[7.4,6.2,7.1,6.4,6.1],[6.8,7.6,6.5,6.0,6.9]], benefit:[44,15,36,39,31]},
+ {scores:[[6.3,9.4,8.8,7.1,8.7],[8.1,6.0,6.4,7.7,5.8],[7.3,7.1,7.8,6.8,6.3],[7.7,6.9,7.0,6.5,7.1]], benefit:[-13,42,19,-8,23]},
+ {scores:[[9.7,6.1,7.0,9.6,8.8],[6.5,7.9,6.2,5.8,6.4],[7.0,8.4,7.7,6.4,5.7],[6.1,7.5,7.4,6.9,7.2]], benefit:[47,-11,-7,51,20]},
+ {scores:[[7.2,8.6,9.6,6.5,9.4],[7.8,6.2,7.1,7.3,6.0],[6.7,7.3,6.5,7.5,7.2],[7.4,6.8,8.2,6.9,6.4]], benefit:[-6,23,27,-10,38]},
+ {scores:[[8.8,7.0,6.2,9.3,7.1],[5.9,8.3,7.7,5.8,6.2],[6.8,7.9,7.4,6.4,7.8],[7.1,7.6,8.1,6.6,6.9]], benefit:[30,-9,-14,43,-7]},
+ {scores:[[5.8,9.7,9.1,8.5,8.0],[7.6,6.1,7.4,6.2,7.0],[8.2,7.0,7.2,7.1,6.6],[7.4,6.8,6.9,6.7,7.4]], benefit:[-18,48,21,24,8]},
+ {scores:[[9.4,8.0,7.6,5.9,9.8],[6.2,6.8,6.4,7.8,5.5],[7.1,7.2,7.9,7.3,6.2],[6.7,7.5,6.8,7.0,7.1]], benefit:[41,9,-5,-16,54]},
+ {scores:[[8.0,5.7,9.5,8.8,6.4],[6.7,7.8,6.1,6.0,7.6],[7.2,8.1,7.4,6.6,7.2],[7.5,7.0,7.8,6.9,8.0]], benefit:[7,-19,33,28,-12]},
+ {scores:[[9.2,9.1,5.9,7.4,8.9],[6.4,6.5,8.0,6.1,6.2],[7.1,6.9,8.4,7.0,7.3],[7.3,7.7,7.8,6.8,7.0]], benefit:[35,25,-21,6,27]},
+ {scores:[[6.9,8.3,8.4,9.5,7.7],[7.9,6.0,6.7,5.7,8.1],[7.5,7.2,7.1,6.2,7.0],[7.2,7.5,7.8,6.9,7.4]], benefit:[-9,19,11,49,-5]}
+];
+
+const summaryBenefit=AXES.map((_,ai)=>Math.round(designs.reduce((s,d)=>s+d.benefit[ai],0)/designs.length));
+const averageScores=SERIES.map((_,si)=>AXES.map((_,ai)=>designs.reduce((s,d)=>s+d.scores[si][ai],0)/designs.length));
+const slides=[...designs.map((d,i)=>({type:"design",i,scores:d.scores,benefit:d.benefit})),{type:"summary",scores:averageScores,benefit:summaryBenefit}];
+const summaryAvg=Math.round(summaryBenefit.reduce((a,b)=>a+b,0)/summaryBenefit.length);
+
+const svg=document.getElementById('radar'), NS='http://www.w3.org/2000/svg';
+const cx=405,cy=323,R=218;
+const el=(tag,a={})=>{const x=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(a))x.setAttribute(k,v);return x};
+const polar=(i,v)=>{const ang=-Math.PI/2+i*2*Math.PI/5,r=R*v/10;return[cx+Math.cos(ang)*r,cy+Math.sin(ang)*r]};
+const points=vals=>vals.map((v,i)=>polar(i,v).map(n=>n.toFixed(1)).join(',')).join(' ');
+
+// glow defs
+const defs=el('defs');
+defs.innerHTML=`
+ <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <radialGradient id="centerGlow"><stop offset="0" stop-color="#0086ff" stop-opacity=".11"/><stop offset="1" stop-color="#0086ff" stop-opacity="0"/></radialGradient>`;
+svg.appendChild(defs);
+svg.appendChild(el('circle',{cx,cy,r:R*.96,fill:'url(#centerGlow)'}));
+for(let t=2;t<=10;t+=1){svg.appendChild(el('polygon',{points:points(Array(5).fill(t)),class:`grid ${t%2===0?'major':''}`}))}
+AXES.forEach((axis,i)=>{
+  let [x,y]=polar(i,10);svg.appendChild(el('line',{x1:cx,y1:cy,x2:x,y2:y,class:'axis'}));
+  let [lx,ly]=polar(i,11.58);const anchor=Math.abs(lx-cx)<24?'middle':lx>cx?'start':'end';
+  const g=el('g');const t=el('text',{x:lx,y:ly,class:'axisLabel','text-anchor':anchor,'dominant-baseline':'middle'});t.textContent=axis.label;g.appendChild(t);
+  const h=el('text',{x:lx,y:ly+20,class:'axisHint','text-anchor':anchor,'dominant-baseline':'middle'});h.textContent=axis.hint;g.appendChild(h);svg.appendChild(g);
+});
+[0,2,4,6,8,10].forEach(t=>{let [x,y]=polar(0,t);const q=el('text',{x:x+9,y:y+4,class:'tick'});q.textContent=t;svg.appendChild(q)});
+
+const ghostLayer=el('g');svg.appendChild(ghostLayer);
+designs.forEach(d=>{const g=el('polygon',{points:points(d.scores[0]),class:'ghost',opacity:'0'});ghostLayer.appendChild(g)});
+const groups=[];
+SERIES.forEach((s,si)=>{
+  const g=el('g');const f=el('polygon',{points:points(slides[0].scores[si]),fill:s.fill,class:'shapeFill'});
+  const l=el('polygon',{points:points(slides[0].scores[si]),stroke:s.color,'stroke-width':si===0?4.6:2.4,class:`shapeLine ${si===0?'bayaLine':''}`,opacity:si===0?1:.9});g.append(f,l);
+  const nodes=[];slides[0].scores[si].forEach((v,i)=>{let [x,y]=polar(i,v);const c=el('circle',{cx:x,cy:y,r:si===0?6.2:4.5,fill:s.color,stroke:'#e8fbff','stroke-width':si===0?2.1:1.25,class:'node'});c.dataset.si=si;c.dataset.ai=i;g.appendChild(c);nodes.push(c)});svg.appendChild(g);groups.push({g,f,l,nodes});
+});
+
+// Right panel rows
+const metricRows=document.getElementById('metricRows');
+AXES.forEach((a,i)=>{
+ const r=document.createElement('div');r.className='metricRow';
+ r.innerHTML=`<div><div class="metricTop"><span class="metricName">${a.label}</span><span class="rank" id="rank${i}"></span></div><div class="diverging"><i class="zero"></i><i class="barNeg"></i><i class="barPos"></i></div></div><div class="pct">0%</div>`;
+ metricRows.appendChild(r);
+});
+const dots=document.getElementById('dots');slides.forEach(()=>{const d=document.createElement('i');d.className='dotnav';dots.appendChild(d)});
+
+let slide=0,paused=false,timer=null,start=performance.now();
+const DUR=3300,SUMMARY_DUR=5900;
+const tip=document.getElementById('tip');
+const avg=a=>Math.round(a.reduce((x,y)=>x+y,0)/a.length);
+function bestAlt(scores,ai){let best=1;for(let si=2;si<4;si++)if(scores[si][ai]>scores[best][ai])best=si;return best}
+function updateRadar(scores){
+ scores.forEach((vals,si)=>{groups[si].f.setAttribute('points',points(vals));groups[si].l.setAttribute('points',points(vals));vals.forEach((v,i)=>{const [x,y]=polar(i,v),c=groups[si].nodes[i];c.setAttribute('cx',x);c.setAttribute('cy',y);c.dataset.value=v.toFixed(1)})});
+}
+function animateNumber(node,target,ms=720){
+ const from=parseFloat(node.dataset.v||0),t0=performance.now();
+ const sign=v=>v>0?'+':v<0?'−':'';
+ function tick(now){const p=Math.min(1,(now-t0)/ms),e=1-Math.pow(1-p,4),v=from+(target-from)*e,r=Math.round(v);node.textContent=sign(r)+Math.abs(r)+'%';if(p<1)requestAnimationFrame(tick);else node.dataset.v=target}
+ requestAnimationFrame(tick);
+}
+function render(n){
+ slide=(n+slides.length)%slides.length;const s=slides[slide],isSummary=s.type==='summary';
+ updateRadar(s.scores);
+ document.getElementById('subtitle').textContent=isSummary?'All 10 designs · superimposed portfolio view':`Design ${s.i+1} of 10 · competitive profile`;
+ document.getElementById('modeName').textContent=isSummary?'All designs':`Design ${s.i+1}`;
+ document.getElementById('modeCount').textContent=isSummary?'· portfolio summary':`· ${s.i+1} / 10`;
+ document.getElementById('summaryBadge').classList.toggle('on',isSummary);
+ [...ghostLayer.children].forEach((g,i)=>{g.style.transitionDelay=`${i*38}ms`;g.setAttribute('opacity',isSummary?'.78':'0')});
+ [...metricRows.children].forEach((r,i)=>{
+   const v=s.benefit[i],pos=r.querySelector('.barPos'),neg=r.querySelector('.barNeg'),p=r.querySelector('.pct');
+   // scale: -25..+55 mapped around zero baseline at 31.25%
+   pos.style.width=v>0?Math.min(68.75,v/55*68.75)+'%':'0';neg.style.width=v<0?Math.min(31.25,Math.abs(v)/25*31.25)+'%':'0';
+   p.classList.toggle('neg',v<0);animateNumber(p,v);
+   const alt=bestAlt(s.scores,i);document.getElementById('rank'+i).textContent=isSummary?'portfolio avg':`vs ${SERIES[alt].name.replace('Competitor ','Comp. ')}`;
+ });
+ const a=isSummary?summaryAvg:avg(s.benefit),num=document.getElementById('avgNumber');num.classList.toggle('negative',a<0);animateNumber(num,a,800);
+ document.getElementById('avgLabel').textContent=isSummary?'Average Buyer Benefit':'Average Buyer Benefit';
+ document.getElementById('avgSub').textContent=isSummary?'Across all 10 designs · average of five higher-is-better metrics':`Design ${s.i+1} · average across five higher-is-better metrics`;
+ document.getElementById('avgCard').classList.toggle('summary',isSummary);
+ [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===slide));
+ start=performance.now();schedule();
+}
+function schedule(){clearTimeout(timer);if(paused)return;timer=setTimeout(()=>render(slide+1),slides[slide].type==='summary'?SUMMARY_DUR:DUR)}
+function togglePlay(force){paused=force!==undefined?force:!paused;document.getElementById('play').textContent=paused?'▶':'Ⅱ';if(paused)clearTimeout(timer);else{start=performance.now();schedule()}}
+document.getElementById('prev').onclick=()=>render(slide-1);document.getElementById('next').onclick=()=>render(slide+1);document.getElementById('play').onclick=()=>togglePlay();document.getElementById('summaryBtn').onclick=()=>render(slides.length-1);
+document.getElementById('stage').addEventListener('mouseenter',e=>{if(e.target.closest('.btn'))return;});
+
+// Hover radar points for exact values
+svg.addEventListener('pointermove',e=>{const c=e.target.closest('.node');if(!c){tip.style.opacity=0;return}const si=+c.dataset.si,ai=+c.dataset.ai;tip.innerHTML=`<b>${SERIES[si].name}</b> · ${AXES[ai].label}: ${c.dataset.value}`;const rect=document.getElementById('stage').getBoundingClientRect();tip.style.left=(e.clientX-rect.left)+'px';tip.style.top=(e.clientY-rect.top)+'px';tip.style.opacity=1});
+svg.addEventListener('pointerleave',()=>tip.style.opacity=0);
+
+function progress(now){const dur=slides[slide].type==='summary'?SUMMARY_DUR:DUR,p=paused?0:Math.min(1,(now-start)/dur);document.getElementById('prog').style.width=(p*100)+'%';requestAnimationFrame(progress)}
+render(0);requestAnimationFrame(progress);
+})();
+</script>
+</body>
+</html>
