@@ -3,149 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Baya fabric benefits</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap">
+  <title>Baya vs its competitors</title>
   <style>
-    body {
-      margin: 0;
-      background: #ffffff;
-      color: #0a0a0b;
-      font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-    .page { max-width: 1240px; margin: 0 auto; padding: 24px 32px 32px; }
-
-    .eyebrow {
-      font-family: "Manrope", system-ui, sans-serif;
-      font-size: 0.875rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-      color: #0086ff; margin: 0 0 8px;
-    }
-    h1 {
-      font-family: "Poppins", system-ui, sans-serif;
-      font-size: 28px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 16px;
-    }
-
-    .layout { display: block; }
-    /* cap the radar's width so its (width-scaled) height stays on screen */
-    #chart .bradar-chart-wrap { flex: 0 1 560px; max-width: 560px; }
-    #chart .bradar-panel { flex: 1 1 300px; max-width: 420px; }
-
-    /* ── product rail (below the chart) — styled as the brand tab component ── */
-    .rail-wrap { margin-top: 16px; }
-    .rail-label {
-      font-family: "Poppins", system-ui, sans-serif;
-      font-size: 12px; font-weight: 600; color: #8a9099; margin: 0 0 8px;
-    }
-    .rail { display: flex; flex-direction: row; flex-wrap: wrap; gap: 8px 16px; margin-left: -8px; }
-    .pbtn {
-      display: inline-flex; align-items: center;
-      font-family: "Manrope", system-ui, sans-serif;
-      font-size: 14px; font-weight: 500; text-align: left;
-      min-height: 44px; color: #55595e; background: none;
-      border: none; border-bottom: 2px solid transparent;
-      padding: 8px; cursor: pointer;
-      transition: color .15s, border-color .15s;
-    }
-    .pbtn:hover { color: #0a0a0b; }
-    .pbtn:focus-visible { outline: 2px solid #0086ff; outline-offset: -2px; }
-    .pbtn.on { border-bottom-color: #0086ff; color: #0086ff; font-weight: 600; }
-    @media (max-width: 880px) {
-      .page { padding: 24px 24px 32px; }
-    }
+    body { margin: 0; background: #ffffff; }
+    .host { padding: 26px 40px 18px; }
+    @media (max-width: 900px) { .host { padding: 20px 20px 14px; } }
   </style>
 </head>
 <body>
-  <div class="page">
-    <p class="eyebrow">Product Portfolio</p>
-    <h1>Baya fabric benefits</h1>
-
-    <div class="layout">
-      <div id="chart"></div>
-
-      <div class="rail-wrap">
-        <p class="rail-label" id="rail-label">Products</p>
-        <div class="rail" id="rail" role="tablist" aria-labelledby="rail-label"></div>
-      </div>
-    </div>
+  <!-- ============================================================
+       This page is just a host. To embed the section on the website,
+       copy exactly this block (the div + the four scripts):
+       ============================================================ -->
+  <div class="host">
+    <div id="baya-portfolio"></div>
   </div>
 
-  <script src="baya-radar.js?v=2"></script>
-  <script src="data.js?v=2"></script>
+  <script src="baya-radar.js"></script>
+  <script src="data.js"></script>
+  <script src="portfolio.js"></script>
   <script>
-    (function () {
-      var REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      var products = BAYA_PORTFOLIO.products;
-
-      var chart = BayaRadar.create("#chart", {
-        frameless: true,
-        eyebrow: "", title: "", subtitle: "",
-        maxValue: BAYA_PORTFOLIO.maxValue,
-        axes: BAYA_PORTFOLIO.axes,
-        series: BAYA_PORTFOLIO.companies,
-        products: products,
-        product: null
-      });
-
-      // ── product rail ───────────────────────────────────
-      var rail = document.getElementById("rail");
-      var buttons = [];
-
-      function makeButton(label, pi) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "pbtn";
-        b.setAttribute("role", "tab");
-        b.setAttribute("aria-selected", "false");
-        b.textContent = label;
-        b.addEventListener("click", function () { isolate(pi); });
-        rail.appendChild(b);
-        buttons.push({ el: b, pi: pi });
-        return b;
-      }
-      makeButton("All products", null);
-      products.forEach(function (p, pi) { makeButton(p.name, pi); });
-
-      function isolate(pi) {
-        chart.setProduct(pi);
-        buttons.forEach(function (b) {
-          var on = b.pi === pi || (b.pi === null && pi === null);
-          b.el.classList.toggle("on", on);
-          b.el.setAttribute("aria-selected", String(on));
-        });
-      }
-      isolate(null);
-
-      // ── idle auto-cycle: after 5s without interaction, walk the portfolio ──
-      var IDLE_MS = 5000, STEP_MS = 3000;
-      var idleTimer = null, cycleTimer = null, cycling = false;
-
-      function startCycle() {
-        if (REDUCED || cycling) return;
-        cycling = true;
-        step();
-        cycleTimer = setInterval(step, STEP_MS);
-      }
-      function step() {
-        var cur = chart.getProduct();
-        isolate(cur == null ? 0 : (cur + 1) % products.length);
-      }
-      function stopCycle() {
-        if (!cycling) return;
-        cycling = false;
-        clearInterval(cycleTimer);
-      }
-      function resetIdle() {
-        stopCycle();
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(startCycle, IDLE_MS);
-      }
-
-      if (!REDUCED) {
-        ["pointerdown", "pointermove", "wheel", "keydown", "touchstart"].forEach(function (ev) {
-          window.addEventListener(ev, resetIdle, { passive: true });
-        });
-        idleTimer = setTimeout(startCycle, IDLE_MS);
-      }
-    })();
+    BayaPortfolio.mount("#baya-portfolio");
+    // Optional: BayaPortfolio.mount("#baya-portfolio", { eyebrow: "…", title: "…" })
   </script>
 </body>
 </html>
