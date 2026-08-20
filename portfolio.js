@@ -49,13 +49,14 @@
     ".bp-arrow:active{background:#0086ff;color:#ffffff;}",
     ".bp-arrow:focus-visible{outline:2px solid #3f9dff;outline-offset:1px;}",
     ".bp-arrow svg{display:block;}",
-    /* radar on the left; on the right a column of arrows (centered) over the metrics —
-       the whole pair centered as a block and vertically centered against each other */
-    ".bp-stage .bradar-main{justify-content:center;align-items:center;}",
+    /* radar on the left; metrics table + arrows in a fixed-width column on the
+       right — a real two-column layout (nowrap) down to the 760px breakpoint,
+       where it switches to a stacked vertical layout for phones/narrow panes */
+    ".bp-stage .bradar-main{flex-wrap:nowrap;justify-content:center;align-items:center;}",
     ".bp-stage .bradar-legend{justify-content:center;}",
-    ".bp-stage .bradar-chart-wrap{flex:1 1 520px;min-width:340px;max-width:730px;}",
+    ".bp-stage .bradar-chart-wrap{flex:1 1 0;min-width:280px;max-width:760px;}",
     ".bp-side{display:flex;flex-direction:column;align-items:stretch;gap:14px;",
-    "  flex:0 1 320px;min-width:265px;}",
+    "  flex:0 0 300px;min-width:240px;}",
     ".bp-side .bp-arrows{align-self:center;}",
     ".bp-stage .bradar-panel{flex:none;width:100%;min-width:0;margin-top:0;}",
     ".bp-stage .bradar-overall{width:100%;}",
@@ -63,7 +64,12 @@
     "  .bp-title{font-size:32px;}",
     "  .bp-stage{padding:14px 16px 12px;}",
     "  .bp-name{font-size:24px;}",
-    "  .bp-stage .bradar-chart-wrap{min-width:280px;}",
+    "  .bp-side{flex-basis:260px;min-width:220px;}",
+    "}",
+    "@media (max-width:760px){",
+    "  .bp-stage .bradar-main{flex-wrap:wrap;}",
+    "  .bp-stage .bradar-chart-wrap{flex:1 1 100%;min-width:0;max-width:none;}",
+    "  .bp-side{flex:1 1 100%;min-width:0;}",
     "}",
     "@media (max-width:420px){",
     "  .bp-title{font-size:24px;}",
@@ -71,8 +77,6 @@
     "  .bp-name{font-size:18px;}",
     "  .bp-count{font-size:12px;}",
     "  .bp-arrow{width:32px;height:32px;}",
-    "  .bp-stage .bradar-chart-wrap{min-width:0;flex-basis:100%;}",
-    "  .bp-side{min-width:0;flex-basis:100%;}",
     "}"
   ].join("\n");
 
