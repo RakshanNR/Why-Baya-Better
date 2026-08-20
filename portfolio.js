@@ -64,6 +64,15 @@
     "  .bp-stage{padding:14px 16px 12px;}",
     "  .bp-name{font-size:24px;}",
     "  .bp-stage .bradar-chart-wrap{min-width:280px;}",
+    "}",
+    "@media (max-width:420px){",
+    "  .bp-title{font-size:24px;}",
+    "  .bp-stage{padding:10px 10px 10px;}",
+    "  .bp-name{font-size:18px;}",
+    "  .bp-count{font-size:12px;}",
+    "  .bp-arrow{width:32px;height:32px;}",
+    "  .bp-stage .bradar-chart-wrap{min-width:0;flex-basis:100%;}",
+    "  .bp-side{min-width:0;flex-basis:100%;}",
     "}"
   ].join("\n");
 

@@ -8,6 +8,7 @@
     body { margin: 0; background: #ffffff; }
     .host { padding: 26px 40px 18px; }
     @media (max-width: 900px) { .host { padding: 20px 20px 14px; } }
+    @media (max-width: 420px) { .host { padding: 12px 12px 10px; } }
   </style>
 </head>
 <body>
@@ -25,6 +26,35 @@
   <script>
     BayaPortfolio.mount("#baya-portfolio");
     // Optional: BayaPortfolio.mount("#baya-portfolio", { eyebrow: "…", title: "…" })
+  </script>
+
+  <!-- ============================================================
+       Auto-resize: when this page is embedded in an iframe, tell the
+       parent page our real content height so the iframe can match it
+       instead of using a fixed height (which clips or wastes space on
+       different screen sizes). See the paired listener snippet in the
+       embed instructions.
+       ============================================================ -->
+  <script>
+    (function () {
+      if (window.parent === window) return;
+      var lastH = 0;
+      function send() {
+        var h = Math.ceil(document.documentElement.scrollHeight);
+        if (h !== lastH) {
+          lastH = h;
+          window.parent.postMessage({ type: "baya-portfolio-resize", height: h }, "*");
+        }
+      }
+      if (window.ResizeObserver) {
+        new ResizeObserver(send).observe(document.body);
+      } else {
+        window.addEventListener("resize", send);
+        setInterval(send, 500);
+      }
+      window.addEventListener("load", send);
+      send();
+    })();
   </script>
 </body>
 </html>
