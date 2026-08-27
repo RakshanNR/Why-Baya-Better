@@ -27,19 +27,19 @@ var BAYA_PORTFOLIO = {
   maxValue: 10,
 
   axes: [
-    { label: "1 / Latency",           short: "1/Latency",  description: "Higher score = lower latency" },
-    { label: "Power Efficiency",      short: "Power",      description: "Higher score = better perf/W" },
-    { label: "Bandwidth",             short: "B/W",        description: "Higher score = higher sustained bandwidth" },
-    { label: "Silicon Area",          short: "Area",       description: "Higher score = smaller area" },
-    { label: "Physical Design Speed", short: "PD Speed",   description: "Higher score = faster design closure" }
+    { label: "1 / Latency",           short: "1/Latency",  benefit: "lower latency",           description: "Higher score = lower latency" },
+    { label: "Power Efficiency",      short: "Power",      benefit: "higher power efficiency", description: "Higher score = better perf/W" },
+    { label: "Bandwidth",             short: "B/W",        benefit: "higher bandwidth",        description: "Higher score = higher sustained bandwidth" },
+    { label: "Silicon Area",          short: "Area",       benefit: "better area efficiency",  description: "Higher score = smaller area" },
+    { label: "Physical Design Speed", short: "PD Speed",   benefit: "faster design closure",   description: "Higher score = faster design closure" }
   ],
 
   // colors are tuned for the dark chart surface (contrast + colorblind checks)
   companies: [
-    { name: "Baya Systems", color: "#0086ff" },
-    { name: "Competitor A", color: "#d63a20" },
-    { name: "Competitor B", color: "#22a765" },
-    { name: "In-house",     color: "#e26a9f" }
+    { name: "Baya Systems",  color: "#0086ff" },
+    { name: "Alternative A", color: "#d63a20" },
+    { name: "Alternative B", color: "#22a765" },
+    { name: "In-house",      color: "#e26a9f" }
   ],
 
   products: [

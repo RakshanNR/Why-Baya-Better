@@ -64,8 +64,8 @@
     ],
     series: [
       { name: "Baya Systems", color: "#0086ff", values: [9, 8.5, 9, 8, 9.5] },
-      { name: "Competitor A", color: "#f1502f", values: [6, 5.5, 7, 5, 4] },
-      { name: "Competitor B", color: "#0a9fae", values: [5, 6.5, 5.5, 6.5, 5] },
+      { name: "Alternative A", color: "#f1502f", values: [6, 5.5, 7, 5, 4] },
+      { name: "Alternative B", color: "#0a9fae", values: [5, 6.5, 5.5, 6.5, 5] },
       { name: "In-house", color: "#4a3aa7", values: [7, 6, 6.5, 7.5, 6.5] }
     ],
     products: null,   // array of {name, values:[rows per series]} switches on multi mode
@@ -111,7 +111,8 @@
     ".bradar-chip:hover{color:var(--br-ink);}",
     ".bradar-chip:focus-visible{outline:2px solid var(--br-accent);outline-offset:2px;}",
     ".bradar-chip.bradar-off{opacity:.35;filter:grayscale(.6);text-decoration:line-through;}",
-    ".bradar-dot{width:13px;height:13px;border-radius:50%;flex:0 0 13px;}",
+    ".bradar-dot{display:inline-block;vertical-align:-1px;width:13px;height:13px;",
+    "  border-radius:50%;flex:0 0 13px;}",
     ".bradar-main{display:flex;flex-wrap:wrap;gap:6px 26px;align-items:flex-start;}",
     ".bradar-compact .bradar-main{display:block;}",
     ".bradar-chart-wrap{flex:1 1 430px;min-width:320px;position:relative;}",
@@ -343,9 +344,9 @@
     for (var k in DEFAULTS) cfg[k] = user && user[k] !== undefined ? user[k] : DEFAULTS[k];
     cfg.axes = cfg.axes.map(function (a) {
       return typeof a === "string"
-        ? { label: a, short: a, description: "", sub: "" }
+        ? { label: a, short: a, description: "", sub: "", benefit: "" }
         : { label: a.label, short: a.short || a.label,
-            description: a.description || "", sub: a.sub || "" };
+            description: a.description || "", sub: a.sub || "", benefit: a.benefit || "" };
     });
     cfg.series = cfg.series.map(function (s, i) {
       var d = DEFAULTS.series[i] || DEFAULTS.series[0];
@@ -871,8 +872,9 @@
         if (bestSi < 0 || bestV <= 0) return;
         rows.push({
           ai: ai,
-          label: axis.label,
-          vs: cfg.series[bestSi].name.replace(/^Competitor /, "Comp. "),
+          label: axis.short,
+          fullLabel: axis.label,
+          vs: cfg.series[bestSi].name.replace(/^Competitor /, "Comp. ").replace(/^Alternative /, "Alt. "),
           pct: ((b - bestV) / bestV) * 100
         });
       });
@@ -889,44 +891,15 @@
           "Show Baya Systems and at least one other company to compare.");
         return;
       }
-      var maxPos = 0, maxNeg = 0;
-      rows.forEach(function (r) {
-        if (r.pct > maxPos) maxPos = r.pct;
-        if (r.pct < maxNeg) maxNeg = r.pct;
-      });
-      // pad and round the scale out to a clean 5, keeping at least ±5 visible
-      var posAxis = Math.max(5, Math.ceil((maxPos * 1.12) / 5) * 5);
-      var negAxis = Math.max(5, Math.ceil((-maxNeg * 1.12) / 5) * 5);
-      var span = posAxis + negAxis;
-      var zeroPct = (negAxis / span) * 100;
-
-      rows.forEach(function (r, i) {
-        var row = htmlEl("div", "bradar-ben-row", refs.panel);
-        row.style.animationDelay = (i * 45) + "ms";
-        row.title = "Show " + r.label + " side by side";
-        row.setAttribute("role", "button");
-        row.tabIndex = 0;
-        row.addEventListener("click", function () { select(r.ai); });
-        row.addEventListener("keydown", function (ev) {
-          if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); select(r.ai); }
-        });
-        var main = htmlEl("div", "bradar-ben-main", row);
-        var top = htmlEl("div", "bradar-ben-top", main);
-        htmlEl("span", "bradar-ben-label", top, r.label);
-        htmlEl("span", "bradar-ben-vs", top, "vs " + r.vs);
-        var track = htmlEl("div", "bradar-ben-track", main);
-        var zero = htmlEl("span", "bradar-ben-zero", track);
-        zero.style.left = zeroPct.toFixed(2) + "%";
-        var fill = htmlEl("span", "bradar-ben-fill " +
-          (r.pct >= 0 ? "bradar-pos" : "bradar-neg"), track);
-        var w = (Math.abs(r.pct) / span) * 100;
-        fill.style.width = w.toFixed(2) + "%";
-        fill.style.left = (r.pct >= 0 ? zeroPct : zeroPct - w).toFixed(2) + "%";
-        var rounded = Math.round(r.pct);
-        htmlEl("span", "bradar-ben-val " +
-          (rounded > 0 ? "bradar-pos" : rounded < 0 ? "bradar-neg" : "bradar-even"), row,
-          (rounded > 0 ? "+" : rounded < 0 ? "−" : "") + Math.abs(rounded) + "%");
-      });
+      renderBenefitRows(rows.map(function (r) {
+        return {
+          label: r.label,
+          vs: "vs " + r.vs,
+          pct: r.pct,
+          title: "Show " + r.fullLabel + " side by side",
+          onClick: function () { select(r.ai); }
+        };
+      }));
     }
 
     // ---- overall-benefit card (Baya vs the competitor average, one number) ----
@@ -967,6 +940,99 @@
       refs.ovVal.className = "bradar-ov-val " + (rounded >= 0 ? "bradar-pos" : "bradar-neg");
     }
 
+    // shared renderer for a set of signed diverging-bar rows (the benefit design)
+    function renderBenefitRows(rows, opts) {
+      var maxPos = 0, maxNeg = 0;
+      rows.forEach(function (r) {
+        if (r.pct > maxPos) maxPos = r.pct;
+        if (r.pct < maxNeg) maxNeg = r.pct;
+      });
+      // pad and round the scale out to a clean 5, keeping at least ±5 visible
+      var posAxis = Math.max(5, Math.ceil((maxPos * 1.12) / 5) * 5);
+      var negAxis = Math.max(5, Math.ceil((-maxNeg * 1.12) / 5) * 5);
+      var span = posAxis + negAxis;
+      var zeroPct = (negAxis / span) * 100;
+
+      rows.forEach(function (r, i) {
+        var row = htmlEl("div", "bradar-ben-row", refs.panel);
+        row.style.animationDelay = (i * 45) + "ms";
+        if (r.title) row.title = r.title;
+        row.setAttribute("role", "button");
+        row.tabIndex = 0;
+        if (r.onClick) {
+          row.addEventListener("click", r.onClick);
+          row.addEventListener("keydown", function (ev) {
+            if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); r.onClick(); }
+          });
+        }
+        if (r.onHover) {
+          row.addEventListener("mouseenter", function () { r.onHover(true); });
+          row.addEventListener("mouseleave", function () { r.onHover(false); });
+        }
+        var main = htmlEl("div", "bradar-ben-main", row);
+        var top = htmlEl("div", "bradar-ben-top", main);
+        var label = htmlEl("span", "bradar-ben-label", top);
+        if (r.dot) label.appendChild(colorDot(r.dot, 10));
+        label.appendChild(document.createTextNode((r.dot ? " " : "") + r.label));
+        if (r.vs) htmlEl("span", "bradar-ben-vs", top, r.vs);
+        var track = htmlEl("div", "bradar-ben-track", main);
+        var zero = htmlEl("span", "bradar-ben-zero", track);
+        zero.style.left = zeroPct.toFixed(2) + "%";
+        var fill = htmlEl("span", "bradar-ben-fill " +
+          (r.pct >= 0 ? "bradar-pos" : "bradar-neg"), track);
+        var w = (Math.abs(r.pct) / span) * 100;
+        fill.style.width = w.toFixed(2) + "%";
+        fill.style.left = (r.pct >= 0 ? zeroPct : zeroPct - w).toFixed(2) + "%";
+        var rounded = Math.round(r.pct);
+        htmlEl("span", "bradar-ben-val " +
+          (rounded > 0 ? "bradar-pos" : rounded < 0 ? "bradar-neg" : "bradar-even"), row,
+          (rounded > 0 ? "+" : rounded < 0 ? "−" : "") + Math.abs(rounded) + "%");
+      });
+    }
+
+    // metric drill-down: Baya's edge on ONE metric vs each visible alternative
+    function renderMetricView(ai) {
+      refs.barFills = null; // updatePanelValues no-ops in this view
+      var ax = cfg.axes[ai];
+      htmlEl("p", "bradar-panel-title", refs.panel, ax.label);
+      var baya = seriesValues(0)[ai];
+      var rows = [];
+      if (visible[0] && baya != null) {
+        cfg.series.forEach(function (s, si) {
+          if (si === 0 || !visible[si]) return;
+          var v = seriesValues(si)[ai];
+          if (v == null || v <= 0) return;
+          rows.push({
+            label: s.name, dot: s.color,
+            pct: ((baya - v) / v) * 100,
+            title: "Click to hide/show " + s.name,
+            onClick: function () { setVisible(si, !visible[si]); },
+            onHover: function (on) { spotlight(si, on); }
+          });
+        });
+      }
+      if (!rows.length) {
+        htmlEl("p", "bradar-panel-desc", refs.panel,
+          "Show Baya Systems and at least one other company to compare.");
+      } else {
+        // headline: "Baya has 25% lower latency" (vs the best alternative)
+        var best = rows.reduce(function (a, b) { return b.pct < a.pct ? b : a; });
+        var headPct = Math.round(best.pct);
+        var phrase = ax.benefit || ("a higher " + ax.label.toLowerCase() + " score");
+        var head = headPct > 0
+          ? "Baya has " + headPct + "% " + phrase + " than the best alternative."
+          : headPct < 0
+            ? "Baya trails the best alternative by " + Math.abs(headPct) + "% here."
+            : "Baya is on par with the best alternative here.";
+        htmlEl("p", "bradar-panel-desc", refs.panel, head);
+        renderBenefitRows(rows);
+      }
+      var backWrap = htmlEl("p", "bradar-back-wrap", refs.panel);
+      var back = htmlEl("button", "bradar-back", backWrap, "← All metrics");
+      back.type = "button";
+      back.addEventListener("click", function () { select(selected); }); // toggles off
+    }
+
     // ---- side-by-side panel ----
     function renderPanel() {
       refs.panel.textContent = "";
@@ -977,9 +1043,11 @@
         return;
       }
       if (MULTI) {
-        // the carousel header names the design; here just the metric, nothing else
-        htmlEl("p", "bradar-panel-title", refs.panel, ax ? ax.label : "All metrics");
-      } else if (ax) {
+        renderMetricView(selected);
+        updateOverall();
+        return;
+      }
+      if (ax) {
         htmlEl("p", "bradar-panel-title", refs.panel,
           COMPACT ? ax.label : ax.label + " — side by side");
         if (!COMPACT) htmlEl("p", "bradar-panel-desc", refs.panel,
