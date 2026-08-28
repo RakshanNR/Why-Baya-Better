@@ -30,39 +30,46 @@
     "  color:#0086ff;margin:0 0 6px;}",
     ".bp-title{font-family:'Poppins',system-ui,sans-serif;font-size:44.8px;font-weight:500;",
     "  line-height:1.2;color:#ffffff;margin:0 0 20px;}",
-    ".bp-stage{background:#0b0f1c;border-radius:12px;padding:16px 28px 12px;",
+    ".bp-stage{background:#0b0f1c;border-radius:4px;padding:16px 28px 12px;",
     "  border:1px solid rgba(255,255,255,.07);",
-    "  background-image:linear-gradient(rgba(120,160,235,.04) 1px,transparent 1px),",
-    "  linear-gradient(90deg,rgba(120,160,235,.04) 1px,transparent 1px);",
-    "  background-size:46px 46px;}",
-    ".bp-head{display:flex;align-items:center;justify-content:center;gap:20px;margin:0 0 2px;}",
-    ".bp-des{display:flex;align-items:baseline;gap:12px;}",
-    ".bp-name{font-family:'Poppins',system-ui,sans-serif;font-size:29px;font-weight:500;",
-    "  color:#ffffff;margin:0;transition:opacity .16s;}",
-    ".bp-count{font-size:14.5px;font-weight:600;color:#7c8598;margin:0;font-variant-numeric:tabular-nums;}",
-    ".bp-arrows{display:flex;gap:10px;}",
+    "  background-image:",
+    "    radial-gradient(ellipse 75% 65% at 50% 42%,transparent 0%,transparent 35%,#0b0f1c 82%),",
+    "    radial-gradient(rgba(140,175,240,.16) 0,rgba(140,175,240,0) 1.1px);",
+    "  background-repeat:no-repeat,repeat;",
+    "  background-size:100% 100%,4px 4px;}",
+    /* design name + count ("Design 3/10") sits between the two arrow buttons,
+       centered above the metrics list */
+    ".bp-arrows{display:flex;align-items:center;gap:14px;}",
+    ".bp-name{font-family:'Poppins',system-ui,sans-serif;font-size:18px;font-weight:500;",
+    "  color:#ffffff;margin:0;min-width:132px;text-align:center;transition:opacity .16s;",
+    "  font-variant-numeric:tabular-nums;}",
     ".bp-arrow{width:38px;height:38px;border-radius:6px;background:#141927;",
-    "  border:1px solid rgba(255,255,255,.13);color:#c7cede;cursor:pointer;",
+    "  border:1px solid rgba(255,255,255,.13);color:#c7cede;cursor:pointer;flex:0 0 auto;",
     "  display:flex;align-items:center;justify-content:center;",
     "  transition:border-color .15s,background .15s,color .15s;}",
     ".bp-arrow:hover{border-color:#0086ff;background:#14203a;color:#ffffff;}",
     ".bp-arrow:active{background:#0086ff;color:#ffffff;}",
     ".bp-arrow:focus-visible{outline:2px solid #3f9dff;outline-offset:1px;}",
     ".bp-arrow svg{display:block;}",
-    /* radar on the left; on the right a column of arrows (centered) over the metrics —
-       the whole pair centered as a block and vertically centered against each other */
+    /* radar on the left; on the right a centered [prev, name/count, next] row above
+       the metrics list — the whole pair centered as a block and vertically aligned
+       against each other; the legend sits directly under the top padding now that
+       there is no full-width header bar above it */
     ".bp-stage .bradar-main{justify-content:center;align-items:center;}",
-    ".bp-stage .bradar-legend{justify-content:center;}",
+    ".bp-stage .bradar-legend{justify-content:center;margin:0 0 4px;}",
     ".bp-stage .bradar-chart-wrap{flex:1 1 520px;min-width:340px;max-width:730px;}",
     ".bp-side{display:flex;flex-direction:column;align-items:stretch;gap:14px;",
     "  flex:0 1 320px;min-width:265px;}",
     ".bp-side .bp-arrows{align-self:center;}",
     ".bp-stage .bradar-panel{flex:none;width:100%;min-width:0;margin-top:0;}",
     ".bp-stage .bradar-overall{width:100%;}",
+    ".bp-disclaimer{font-size:11.5px;font-weight:500;color:#5b6577;text-align:center;",
+    "  margin:14px 0 0;padding-top:10px;border-top:1px solid rgba(255,255,255,.07);}",
     "@media (max-width:900px){",
     "  .bp-title{font-size:32px;}",
     "  .bp-stage{padding:14px 16px 12px;}",
-    "  .bp-name{font-size:24px;}",
+    "  .bp-name{font-size:15px;min-width:0;}",
+    "  .bp-arrows{gap:10px;}",
     "  .bp-stage .bradar-chart-wrap{min-width:280px;}",
     "}"
   ].join("\n");
@@ -115,14 +122,12 @@
     if (title) el("h2", "bp-title", root, title);
 
     var stage = el("div", "bp-stage", root);
-    var head = el("div", "bp-head", stage);
-    var des = el("div", "bp-des", head);
-    var nameEl = el("p", "bp-name", des, "All designs");
-    var countEl = el("p", "bp-count", des, "");
+    // arrows row: [prev] [design name + count] [next] — sits above the metrics panel below
     var arrows = el("div", "bp-arrows", null);
     var prevBtn = el("button", "bp-arrow", arrows);
     prevBtn.type = "button"; prevBtn.setAttribute("aria-label", "Previous design");
     prevBtn.appendChild(arrowSvg(-1));
+    var nameEl = el("p", "bp-name", arrows, "All designs");
     var nextBtn = el("button", "bp-arrow", arrows);
     nextBtn.type = "button"; nextBtn.setAttribute("aria-label", "Next design");
     nextBtn.appendChild(arrowSvg(1));
@@ -134,14 +139,16 @@
       frameless: true,
       eyebrow: "", title: "", subtitle: "",
       maxValue: data.maxValue,
+      unit: data.unit || "",
       axes: data.axes,
       series: data.companies,
       products: products,
       product: null
     });
 
-    // move the arrows into a right-hand column, centered above the metrics panel,
-    // with the overall-benefit gauge card at the bottom
+    // move the arrows (with the design name + count between them) into a right-hand
+    // column, centered above the metrics panel, with the overall-benefit gauge card
+    // at the bottom
     var main = chartMount.querySelector(".bradar-main");
     var panel = chartMount.querySelector(".bradar-panel");
     var overall = chartMount.querySelector(".bradar-overall");
@@ -149,6 +156,9 @@
     side.appendChild(arrows);
     side.appendChild(panel);
     if (overall) side.appendChild(overall);
+
+    el("p", "bp-disclaimer", stage,
+      "Figures shown are internal benchmark results from Baya Systems’ internal audit, provided for illustrative comparison only.");
 
     // ── design carousel: All designs → Design 1 → … → Design N → back ──
     var seq = [null].concat(products.map(function (_, i) { return i; }));
@@ -166,16 +176,13 @@
     function applyPos() {
       var pi = seq[pos];
       chart.setProduct(pi);
-      var label = pi == null ? "All designs" : products[pi].name;
-      var count = pi == null ? products.length + " designs" : (pi + 1) + " / " + products.length;
+      var label = pi == null ? "All designs" : products[pi].name + "/" + products.length;
       if (REDUCED) {
         nameEl.textContent = label;
-        countEl.textContent = count;
       } else {
         nameEl.style.opacity = "0";
         setTimeout(function () {
           nameEl.textContent = label;
-          countEl.textContent = count;
           nameEl.style.opacity = "1";
         }, 140);
       }

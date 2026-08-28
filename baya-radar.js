@@ -71,6 +71,7 @@
     products: null,   // array of {name, values:[rows per series]} switches on multi mode
     product: null,    // multi mode: isolated product index, or null for all
     maxValue: 10,
+    unit: "",         // suffix appended to displayed values, e.g. "%"
     rings: 5,
     selected: null,   // null = overall average view; 0..N-1 opens on that metric
     theme: "light",
@@ -576,7 +577,7 @@
       if (!COMPACT) {
         for (ring = 0; ring <= cfg.rings; ring++) {
           svgEl("text", { x: CX + 6, y: CY - (R * ring) / cfg.rings + 3, "class": "bradar-tick" }, svg)
-            .textContent = fmt((cfg.maxValue * ring) / cfg.rings);
+            .textContent = fmt((cfg.maxValue * ring) / cfg.rings) + cfg.unit;
         }
       }
 
@@ -789,7 +790,7 @@
       var value = pi == null ? s.values[ai] : cfg.products[pi].values[si][ai];
       var label = (pi == null ? "" : cfg.products[pi].name + " · ") + cfg.axes[ai].label + " ";
       var metric = htmlEl("div", "bradar-tt-metric", refs.tooltip, label);
-      htmlEl("b", "", metric, fmt(value));
+      htmlEl("b", "", metric, value == null ? "—" : fmt(value) + cfg.unit);
       refs.tooltip.style.left = (ev.clientX - box.left) + "px";
       refs.tooltip.style.top = (ev.clientY - box.top) + "px";
       refs.tooltip.classList.add("bradar-on");
