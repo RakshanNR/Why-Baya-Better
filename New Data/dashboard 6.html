@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Benefits of Baya's solutions</title>
+  <style>
+    body { margin: 0; background: #0b0f1c; }
+    .host { padding: 26px 40px 18px; }
+    @media (max-width: 900px) { .host { padding: 20px 20px 14px; } }
+  </style>
+</head>
+<body>
+  <!-- ============================================================
+       This page is just a host. To embed the section on the website,
+       copy exactly this block (the div + the four scripts):
+       ============================================================ -->
+  <div class="host">
+    <div id="baya-portfolio"></div>
+  </div>
+
+  <script src="baya-radar.js"></script>
+  <script src="data.js"></script>
+  <script src="portfolio.js"></script>
+  <script>
+    BayaPortfolio.mount("#baya-portfolio");
+    // Optional: BayaPortfolio.mount("#baya-portfolio", { eyebrow: "…", title: "…" })
+  </script>
+</body>
+</html>
