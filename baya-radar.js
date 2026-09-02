@@ -205,7 +205,7 @@
     ".bradar-bar-val{flex:0 0 44px;font-family:var(--br-body);font-size:17.5px;font-weight:800;",
     "  color:var(--br-ink);text-align:right;font-variant-numeric:tabular-nums;}",
     ".bradar-compact .bradar-bar-val{flex:0 0 26px;font-size:11.5px;}",
-    /* Baya vs best alternative, per metric — signed diverging bars (panel default) */
+    /* Baya vs the average of the other companies, per metric — signed diverging bars (panel default) */
     ".bradar-ben-row{display:flex;align-items:center;gap:12px;margin:0 0 13px;cursor:pointer;",
     "  animation:bradar-row .38s cubic-bezier(.2,.9,.3,1.15) backwards;}",
     ".bradar-ben-row:focus-visible{outline:2px solid var(--br-accent);outline-offset:2px;}",
@@ -855,8 +855,9 @@
       return have.reduce(function (a, b) { return a + b; }, 0) / have.length;
     }
 
-    // Baya's edge per metric vs the best visible alternative, as signed percents.
-    // Uses the current context: the isolated design, or averages across all designs.
+    // Baya's edge per metric vs the average of every other visible company that has
+    // data for it (nulls excluded), as signed percents. Uses the current context:
+    // the isolated design, or averages across all designs.
     function benefitRows() {
       if (!visible[0]) return [];
       var baya = seriesValues(0);
@@ -864,25 +865,27 @@
       cfg.axes.forEach(function (axis, ai) {
         var b = baya[ai];
         if (b == null) return;
-        var bestSi = -1, bestV = -Infinity;
+        var sum = 0, count = 0;
         for (var si = 1; si < cfg.series.length; si++) {
           if (!visible[si]) continue;
           var v = seriesValues(si)[ai];
-          if (v != null && v > bestV) { bestV = v; bestSi = si; }
+          if (v != null) { sum += v; count++; }
         }
-        if (bestSi < 0 || bestV <= 0) return;
+        if (!count) return;
+        var avgV = sum / count;
+        if (avgV <= 0) return;
         rows.push({
           ai: ai,
           label: axis.short,
           fullLabel: axis.label,
-          vs: cfg.series[bestSi].name.replace(/^Competitor /, "Comp. ").replace(/^Alternative /, "Alt. "),
-          pct: ((b - bestV) / bestV) * 100
+          vs: "average",
+          pct: ((b - avgV) / avgV) * 100
         });
       });
       return rows;
     }
 
-    // default panel view: Baya's performance vs the best alternative, row per metric
+    // default panel view: Baya's performance vs the average of the other companies, row per metric
     function renderBenefit() {
       refs.barFills = null; // updatePanelValues no-ops in this view
       htmlEl("p", "bradar-panel-title", refs.panel, "Baya benefit by metric");
