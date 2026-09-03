@@ -155,7 +155,7 @@
     ".bradar-wedge{fill:rgba(0,134,255,.08);pointer-events:none;}",
     ".bradar-tick{font-family:var(--br-body);font-size:10.5px;font-weight:600;fill:#8a9099;",
     "  paint-order:stroke;stroke:#ffffff;stroke-width:3px;}",
-    ".bradar-dark .bradar-tick{fill:#6b768c;stroke:#0c0f17;}",
+    ".bradar-dark .bradar-tick{fill:#6b768c;stroke:#16171b;}",
     ".bradar-halo{fill:rgba(0,134,255,.12);stroke:#0086ff;stroke-width:1.5;",
     "  filter:drop-shadow(0 0 5px rgba(0,134,255,.55));}",
     ".bradar-hit{cursor:pointer;}",
@@ -398,8 +398,8 @@
       glowOn: true,
       ringMinor: "rgba(105,150,230,.14)", ringMajor: "rgba(130,170,240,.26)",
       spoke: "rgba(105,150,230,.14)",
-      nodeFill: "#0c0f17", nodeStroke: "rgba(255,255,255,.55)",
-      markerRing: "#0c0f17"
+      nodeFill: "#16171b", nodeStroke: "rgba(255,255,255,.55)",
+      markerRing: "#16171b"
     } : {
       glowOn: false,
       ringMinor: "#eef1f6", ringMajor: "#e3e8ef",
