@@ -915,20 +915,30 @@
       return card;
     }
 
-    // Kept in lockstep with the rows above it: the average IS the mean of those
-    // same per-metric percentages (benefitRows()), not a separately-computed
-    // ratio-of-means — otherwise the headline number could disagree with its own
-    // panel and read as a bug.
     function updateOverall() {
       if (!refs.overall) return;
+      function meanOf(row) {
+        var have = row.filter(function (v) { return v != null; });
+        return have.length ? have.reduce(function (a, b) { return a + b; }, 0) / have.length : null;
+      }
       var show = selected == null && visible[0];
-      var rows = show ? benefitRows() : [];
-      if (!rows.length) {
+      var baya = show ? meanOf(seriesValues(0)) : null;
+      var rivals = [];
+      if (show) {
+        for (var si = 1; si < cfg.series.length; si++) {
+          if (!visible[si]) continue;
+          var m = meanOf(seriesValues(si));
+          if (m != null) rivals.push(m);
+        }
+      }
+      if (baya == null || !rivals.length) {
         refs.overall.style.display = "none";
         return;
       }
+      var rivalAvg = rivals.reduce(function (a, b) { return a + b; }, 0) / rivals.length;
+      if (rivalAvg <= 0) { refs.overall.style.display = "none"; return; }
       refs.overall.style.display = "";
-      var pct = rows.reduce(function (a, r) { return a + r.pct; }, 0) / rows.length;
+      var pct = ((baya - rivalAvg) / rivalAvg) * 100;
       var rounded = Math.round(pct);
       refs.ovVal.textContent = (rounded > 0 ? "+" : rounded < 0 ? "−" : "") + Math.abs(rounded) + "%";
       refs.ovVal.className = "bradar-ov-val " + (rounded >= 0 ? "bradar-pos" : "bradar-neg");

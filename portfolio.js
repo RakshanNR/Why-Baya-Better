@@ -65,25 +65,12 @@
     ".bp-stage .bradar-overall{width:100%;}",
     ".bp-disclaimer{font-size:11.5px;font-weight:500;color:#5b6577;text-align:center;",
     "  margin:16px 0 0;padding-top:16px;border-top:1px solid rgba(255,255,255,.10);}",
-    /* KPI stat row below the stage — averaged across all 10 designs, so it stays
-       fixed regardless of which design the carousel above is currently isolating */
-    ".bp-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:32px 40px;",
-    "  margin:28px 0 0;padding:28px 0 0;border-top:1px solid rgba(255,255,255,.10);}",
-    ".bp-stat{flex:1 1 160px;max-width:200px;text-align:center;}",
-    ".bp-stat-value{font-family:'Poppins',system-ui,sans-serif;",
-    "  font-size:clamp(1.75rem,1.4rem + 1.5vw,2.5rem);font-weight:700;line-height:1.1;",
-    "  letter-spacing:-0.01em;color:#0086ff;margin:0 0 6px;font-variant-numeric:tabular-nums;}",
-    ".bp-stat-label{font-family:'Poppins',system-ui,sans-serif;font-size:15px;",
-    "  font-weight:600;color:#ffffff;margin:0 0 4px;}",
-    ".bp-stat-sub{font-size:12.5px;font-weight:500;color:#7c8598;margin:0;}",
     "@media (max-width:900px){",
     "  .bp-title{font-size:32px;}",
     "  .bp-stage{padding:20px;}",
     "  .bp-name{font-size:15px;min-width:0;}",
     "  .bp-arrows{gap:10px;}",
     "  .bp-stage .bradar-chart-wrap{min-width:280px;}",
-    "  .bp-stats{gap:22px 20px;margin-top:20px;padding-top:20px;}",
-    "  .bp-stat{flex:1 1 130px;}",
     "}"
   ].join("\n");
 
@@ -101,48 +88,6 @@
     if (text != null) e.textContent = text;
     if (parent) parent.appendChild(e);
     return e;
-  }
-
-  // ── KPI stat row: Baya's edge per metric, averaged across every design ──
-  // Same method as the chart's own "Baya benefit by metric" panel in its default
-  // (all-designs, unselected) view: average each metric across the 10 designs per
-  // company (skipping designs with no data), then compare Baya's average to the
-  // average of the other companies' averages. Computed straight from data.js so it
-  // never drifts out of sync with the chart above it.
-  var STAT_LABELS = ["Lower Latency", "Better Efficiency", "More Bandwidth", "Less Silicon Area", "Faster PD Closure"];
-
-  function axisAvg(data, ci, ai) {
-    var sum = 0, n = 0;
-    data.products.forEach(function (p) {
-      var v = p.values[ci][ai];
-      if (v != null) { sum += v; n++; }
-    });
-    return n ? sum / n : null;
-  }
-
-  function computeMetricStats(data) {
-    var nCo = data.companies.length;
-    var stats = [];
-    data.axes.forEach(function (axis, ai) {
-      var baya = axisAvg(data, 0, ai);
-      if (baya == null) return;
-      var sum = 0, n = 0;
-      for (var ci = 1; ci < nCo; ci++) {
-        var v = axisAvg(data, ci, ai);
-        if (v != null) { sum += v; n++; }
-      }
-      if (!n) return;
-      var altAvg = sum / n;
-      if (altAvg <= 0) return;
-      var pct = ((baya - altAvg) / altAvg) * 100;
-      // a lead of 100%+ (Baya at 2x+ the alternative average) reads better as a
-      // multiplier than a three-digit percentage
-      var display = pct >= 100
-        ? "~" + (1 + pct / 100).toFixed(1) + "x"
-        : (pct >= 0 ? "+" : "−") + Math.round(Math.abs(pct)) + "%";
-      stats.push({ label: STAT_LABELS[ai] || axis.short, sub: "vs Alternative Average", display: display });
-    });
-    return stats;
   }
 
   function arrowSvg(dir) {
@@ -214,17 +159,6 @@
 
     el("p", "bp-disclaimer", stage,
       "Figures shown are internal benchmark results from Baya Systems’ internal audit, provided for illustrative comparison only.");
-
-    var stats = computeMetricStats(data);
-    if (stats.length) {
-      var statsRow = el("div", "bp-stats", root);
-      stats.forEach(function (s) {
-        var tile = el("div", "bp-stat", statsRow);
-        el("p", "bp-stat-value", tile, s.display);
-        el("p", "bp-stat-label", tile, s.label);
-        el("p", "bp-stat-sub", tile, s.sub);
-      });
-    }
 
     // ── design carousel: All designs → Design 1 → … → Design N → back ──
     var seq = [null].concat(products.map(function (_, i) { return i; }));
