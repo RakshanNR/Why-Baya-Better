@@ -849,6 +849,25 @@
       return cfg.series[si].values;
     }
 
+    // Baya's average for one axis, restricted to the same designs company `si` has
+    // data for — comparing it against company si's own average keeps both sides on
+    // the same design basis instead of Baya's full-coverage average vs a company's
+    // partial-coverage one (which skews the % whenever a company is missing data
+    // for some designs). Single-mode / one-design-isolated views already compare
+    // the same row on both sides, so there's nothing to match there.
+    function matchedBayaAvg(si, ai) {
+      if (!MULTI) return seriesValues(0)[ai];
+      if (productSel != null) return cfg.products[productSel].values[0][ai];
+      var sum = 0, count = 0;
+      cfg.products.forEach(function (p) {
+        if (p.values[si][ai] == null) return;
+        var b = p.values[0][ai];
+        if (b == null) return;
+        sum += b; count++;
+      });
+      return count ? sum / count : null;
+    }
+
     // value shown in the panel: the selected metric, or the mean of available scores
     function panelValue(si) {
       var row = seriesValues(si);
@@ -863,26 +882,27 @@
     // the isolated design, or averages across all designs.
     function benefitRows() {
       if (!visible[0]) return [];
-      var baya = seriesValues(0);
       var rows = [];
       cfg.axes.forEach(function (axis, ai) {
-        var b = baya[ai];
-        if (b == null) return;
-        var sum = 0, count = 0;
+        var altSum = 0, bayaSum = 0, count = 0;
         for (var si = 1; si < cfg.series.length; si++) {
           if (!visible[si]) continue;
           var v = seriesValues(si)[ai];
-          if (v != null) { sum += v; count++; }
+          if (v == null) continue;
+          var b = matchedBayaAvg(si, ai);
+          if (b == null) continue;
+          altSum += v; bayaSum += b; count++;
         }
         if (!count) return;
-        var avgV = sum / count;
+        var avgV = altSum / count;
         if (avgV <= 0) return;
+        var bayaAvg = bayaSum / count;
         rows.push({
           ai: ai,
           label: axis.short,
           fullLabel: axis.label,
           vs: "average",
-          pct: ((b - avgV) / avgV) * 100
+          pct: ((bayaAvg - avgV) / avgV) * 100
         });
       });
       return rows;
@@ -992,13 +1012,14 @@
       refs.barFills = null; // updatePanelValues no-ops in this view
       var ax = cfg.axes[ai];
       htmlEl("p", "bradar-panel-title", refs.panel, ax.label);
-      var baya = seriesValues(0)[ai];
       var rows = [];
-      if (visible[0] && baya != null) {
+      if (visible[0]) {
         cfg.series.forEach(function (s, si) {
           if (si === 0 || !visible[si]) return;
           var v = seriesValues(si)[ai];
           if (v == null || v <= 0) return;
+          var baya = matchedBayaAvg(si, ai);
+          if (baya == null) return;
           rows.push({
             label: s.name, dot: s.color,
             pct: ((baya - v) / v) * 100,
