@@ -954,7 +954,7 @@
     // default panel view: Baya's performance vs the average of the other companies, row per metric
     function renderBenefit() {
       refs.barFills = null; // updatePanelValues no-ops in this view
-      htmlEl("p", "bradar-panel-title", refs.panel, "Baya benefit by metric");
+      htmlEl("p", "bradar-panel-title", refs.panel, "Baya benefit by metric (pts)");
       var rows = benefitRows();
       if (!rows.length) {
         htmlEl("p", "bradar-panel-desc", refs.panel,
@@ -976,7 +976,7 @@
     function buildOverall(parent) {
       var card = htmlEl("div", "bradar-overall", parent);
       var head = htmlEl("div", "bradar-ov-head", card);
-      htmlEl("p", "bradar-panel-title", head, "Average Baya benefit");
+      htmlEl("p", "bradar-panel-title", head, "Average Baya benefit (pts)");
       refs.ovVal = htmlEl("span", "bradar-ov-val", head);
       return card;
     }
@@ -996,7 +996,7 @@
       refs.overall.style.display = "";
       var pct = rows.reduce(function (a, r) { return a + r.pct; }, 0) / rows.length;
       var rounded = Math.round(pct * 10) / 10;
-      refs.ovVal.textContent = (rounded > 0 ? "+" : rounded < 0 ? "−" : "") + Math.abs(rounded).toFixed(1) + " pts";
+      refs.ovVal.textContent = (rounded > 0 ? "+" : rounded < 0 ? "−" : "") + Math.abs(rounded).toFixed(1);
       refs.ovVal.className = "bradar-ov-val " + (rounded >= 0 ? "bradar-pos" : "bradar-neg");
     }
 
@@ -1046,7 +1046,7 @@
         var rounded = Math.round(r.pct * 10) / 10;
         htmlEl("span", "bradar-ben-val " +
           (rounded > 0 ? "bradar-pos" : rounded < 0 ? "bradar-neg" : "bradar-even"), row,
-          (rounded > 0 ? "+" : rounded < 0 ? "−" : "") + Math.abs(rounded).toFixed(1) + " pts");
+          (rounded > 0 ? "+" : rounded < 0 ? "−" : "") + Math.abs(rounded).toFixed(1));
       });
     }
 
@@ -1054,7 +1054,7 @@
     function renderMetricView(ai) {
       refs.barFills = null; // updatePanelValues no-ops in this view
       var ax = cfg.axes[ai];
-      htmlEl("p", "bradar-panel-title", refs.panel, ax.label);
+      htmlEl("p", "bradar-panel-title", refs.panel, ax.label + " (pts)");
       var rows = [];
       if (visible[0]) {
         cfg.series.forEach(function (s, si) {
