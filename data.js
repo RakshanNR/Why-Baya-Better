@@ -48,13 +48,14 @@ var BAYA_PORTFOLIO = {
     { label: "Physical Design Speed", short: "PD Speed",   benefit: "faster design closure",   description: "Higher score = faster design closure" }
   ],
 
-  // Baya Design System v1.6 §10: original brand colours only, no derived tints,
-  // on any surface.
+  // Baya keeps its own brand identity (Cyber Blue); the other three are
+  // competitors, not Baya, so they stay off the Baya brand palette and
+  // keep their original neutral comparison colors instead.
   companies: [
-    { name: "Baya Systems",  color: "#0086ff" }, // Cyber Blue
-    { name: "Alternative A", color: "#ee5023" }, // Signal Orange
-    { name: "Alternative B", color: "#09deab" }, // Quantum Teal
-    { name: "In-house",      color: "#ffce00" }  // Neon Yellow
+    { name: "Baya Systems",  color: "#0086ff" }, // Cyber Blue (Baya's brand color)
+    { name: "Alternative A", color: "#d63a20" },
+    { name: "Alternative B", color: "#22a765" },
+    { name: "In-house",      color: "#e26a9f" }
   ],
 
   products: [
