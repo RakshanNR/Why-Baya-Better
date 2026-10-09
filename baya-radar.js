@@ -84,7 +84,7 @@
 
   var CSS = [
     ".bradar-root{--br-ink:#0a0a0b;--br-sub:#55595e;--br-mut:#8a9099;--br-line:#e4e9f0;",
-    "  --br-seg:#e9edf3;--br-seg-border:#dbe1ea;--br-accent:#0086ff;--br-accent-deep:#0068c9;",
+    "  --br-seg:#e9edf3;--br-seg-border:#dbe1ea;--br-accent:#0086ff;--br-accent-deep:#0086ff;",
     "  --br-yellow:#ffce00;--br-surface:#ffffff;",
     "  --br-head:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;",
     "  --br-body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;",
@@ -92,7 +92,7 @@
     "  border:1px solid #e7ecf2;border-radius:8px;padding:26px 28px 24px;",
     "  box-sizing:border-box;max-width:960px;",
     "  box-shadow:0 1px 2px rgba(16,24,40,.04);}",
-    ".bradar-root{--br-pos:#0068c9;--br-neg:#d63a20;--br-zero:rgba(10,10,11,.35);",
+    ".bradar-root{--br-pos:#0086ff;--br-neg:#d63a20;--br-zero:rgba(10,10,11,.35);",
     "  --br-panel-bg:#ffffff;--br-panel-border:#e5e5e7;}",
     ".bradar-root.bradar-dark{--br-ink:#f2f5fa;--br-sub:#aab3c5;--br-mut:#7c8598;",
     "  --br-line:rgba(255,255,255,.09);--br-seg:#1b2233;--br-seg-border:#262f45;",
@@ -222,7 +222,7 @@
     ".bradar-ben-zero{position:absolute;top:-3px;bottom:-3px;width:2px;",
     "  background:var(--br-zero);border-radius:1px;transform:translateX(-1px);}",
     ".bradar-ben-fill{position:absolute;top:2px;bottom:2px;border-radius:999px;min-width:4px;}",
-    ".bradar-ben-fill.bradar-pos{background:linear-gradient(90deg,#0079e6,#0086ff);",
+    ".bradar-ben-fill.bradar-pos{background:#0086ff;",
     "  box-shadow:0 0 6px rgba(0,134,255,.3);}",
     ".bradar-ben-fill.bradar-neg{background:linear-gradient(90deg,#ff8d75,#f1502f);",
     "  box-shadow:0 0 6px rgba(241,80,47,.28);}",
