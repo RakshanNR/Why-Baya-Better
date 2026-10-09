@@ -63,7 +63,7 @@
     /* bleeds edge-to-edge (4px gutter) instead of inheriting the stage's full
        28px padding, so the divider spans nearly the full width and the strip
        keeps a slim 6px gap below the text rather than a tall empty margin */
-    ".bp-disclaimer{font-size:11.5px;font-weight:500;color:rgba(10,10,11,.45);text-align:center;",
+    ".bp-disclaimer{font-size:11.5px;font-weight:500;color:#8a9099;text-align:center;",
     "  margin:16px -24px -28px;padding:16px 24px 6px;border-top:1px solid #e5e5e7;}",
     "@media (max-width:900px){",
     "  .bp-title{font-size:32px;}",
