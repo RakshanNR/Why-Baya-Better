@@ -1,8 +1,9 @@
 /*!
  * BayaPortfolio — drop-in "Baya vs its competitors" section for bayasystems.com.
- * Renders the header, the light stage, the design carousel (with auto-cycle), and
- * the radar into any container. Typography matches the site (Poppins 44.8px/500
- * hero titles, 16px eyebrows, Manrope text).
+ * Renders the carousel (with auto-cycle) and the radar into any container.
+ * No heading and no stage background by default — the host page supplies both;
+ * pass eyebrow/title to opt back into the built-in ones. Typography matches the
+ * site (Poppins 44.8px/500 hero titles, 16px eyebrows, Manrope text).
  *
  * Embed (order matters):
  *   <div id="baya-portfolio"></div>
@@ -12,8 +13,8 @@
  *   <script>BayaPortfolio.mount('#baya-portfolio');</script>
  *
  * Options: BayaPortfolio.mount(target, {
- *   eyebrow: "Product Portfolio",          // "" hides it
- *   title:   "Baya vs its competitors",    // "" hides it
+ *   eyebrow: "Product Portfolio",          // "" (default) hides it
+ *   title:   "Baya vs its competitors",    // "" (default) hides it
  *   data:    BAYA_PORTFOLIO,               // defaults to the global from data.js
  *   idleMs:  5000, stepMs: 3000            // auto-cycle timing
  * });
@@ -30,10 +31,8 @@
     "  color:#0086ff;margin:0 0 6px;}",
     ".bp-title{font-family:'Poppins',system-ui,sans-serif;font-size:44.8px;font-weight:500;",
     "  line-height:1.2;color:#0a0a0b;margin:0 0 20px;}",
-    /* stage = Elevated Surface (Baya Design System v1.6 light-chapter raised token);
-       no decorative mesh here, just the flat surface + hairline */
-    ".bp-stage{background:#f4f4f4;border-radius:4px;padding:28px;",
-    "  border:1px solid #e5e5e7;}",
+    /* no background/border here by request — the host page supplies its own */
+    ".bp-stage{padding:28px;}",
     /* design name + count ("Design 3/10") sits between the two arrow buttons,
        centered above the metrics list */
     ".bp-arrows{display:flex;align-items:center;gap:14px;}",
@@ -115,7 +114,7 @@
 
     var root = el("div", "bp-root", null);
     var eyebrow = opts.eyebrow !== undefined ? opts.eyebrow : "";
-    var title = opts.title !== undefined ? opts.title : "Benefits of Baya's solutions";
+    var title = opts.title !== undefined ? opts.title : "";
     if (eyebrow) el("p", "bp-eyebrow", root, eyebrow);
     if (title) el("h2", "bp-title", root, title);
 
