@@ -52,7 +52,7 @@
        the metrics list — the whole pair centered as a block and vertically aligned
        against each other; the legend sits directly under the top padding now that
        there is no full-width header bar above it */
-    ".bp-stage .bradar-main{justify-content:center;align-items:center;}",
+    ".bp-stage .bradar-main{justify-content:center;align-items:center;padding:4% 0;}",
     ".bp-stage .bradar-legend{justify-content:center;margin:-10px 0 20px;}",
     ".bp-stage .bradar-chart-wrap{flex:1 1 520px;min-width:340px;max-width:730px;}",
     ".bp-side{display:flex;flex-direction:column;align-items:stretch;gap:14px;",
