@@ -53,21 +53,25 @@
        against each other; the legend sits directly under the top padding now that
        there is no full-width header bar above it */
     ".bp-stage .bradar-main{justify-content:center;align-items:center;}",
-    ".bp-stage .bradar-legend{justify-content:center;margin:0 0 20px;}",
+    ".bp-stage .bradar-legend{justify-content:center;margin:-10px 0 20px;}",
     ".bp-stage .bradar-chart-wrap{flex:1 1 520px;min-width:340px;max-width:730px;}",
     ".bp-side{display:flex;flex-direction:column;align-items:stretch;gap:14px;",
     "  flex:0 1 320px;min-width:265px;}",
     ".bp-side .bp-arrows{align-self:center;}",
     ".bp-stage .bradar-panel{flex:none;width:100%;min-width:0;margin-top:0;}",
     ".bp-stage .bradar-overall{width:100%;}",
+    /* bleeds edge-to-edge (4px gutter) instead of inheriting the stage's full
+       28px padding, so the divider spans nearly the full width and the strip
+       keeps a slim 6px gap below the text rather than a tall empty margin */
     ".bp-disclaimer{font-size:11.5px;font-weight:500;color:rgba(10,10,11,.45);text-align:center;",
-    "  margin:16px 0 0;padding-top:16px;border-top:1px solid #e5e5e7;}",
+    "  margin:16px -24px -28px;padding:16px 24px 6px;border-top:1px solid #e5e5e7;}",
     "@media (max-width:900px){",
     "  .bp-title{font-size:32px;}",
     "  .bp-stage{padding:20px;}",
     "  .bp-name{font-size:15px;min-width:0;}",
     "  .bp-arrows{gap:10px;}",
     "  .bp-stage .bradar-chart-wrap{min-width:280px;}",
+    "  .bp-disclaimer{margin:16px -16px -20px;padding:16px 16px 6px;}",
     "}"
   ].join("\n");
 
