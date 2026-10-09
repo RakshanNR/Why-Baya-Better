@@ -48,12 +48,15 @@ var BAYA_PORTFOLIO = {
     { label: "Physical Design Speed", short: "PD Speed",   benefit: "faster design closure",   description: "Higher score = faster design closure" }
   ],
 
-  // colors are tuned for the dark chart surface (contrast + colorblind checks)
+  // Baya Design System v1.6 §10: Cyber Blue primary, plus the "-on-light" derived
+  // tints of Signal Orange / Quantum Teal / Neon Yellow — the brand accents are too
+  // light in their raw form to read as thin chart lines on a white surface, so the
+  // system's own darker on-light tints are used instead (same hues, AA-legible).
   companies: [
-    { name: "Baya Systems",  color: "#0086ff" },
-    { name: "Alternative A", color: "#d63a20" },
-    { name: "Alternative B", color: "#22a765" },
-    { name: "In-house",      color: "#e26a9f" }
+    { name: "Baya Systems",  color: "#0086ff" }, // Cyber Blue (brand primary)
+    { name: "Alternative A", color: "#c23e17" }, // orange-on-light (Signal Orange tint)
+    { name: "Alternative B", color: "#07a37e" }, // teal-on-light (Quantum Teal tint)
+    { name: "In-house",      color: "#a88800" }  // yellow-on-light (Neon Yellow tint)
   ],
 
   products: [

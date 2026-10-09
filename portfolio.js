@@ -1,6 +1,6 @@
 /*!
  * BayaPortfolio — drop-in "Baya vs its competitors" section for bayasystems.com.
- * Renders the header, the dark stage, the design carousel (with auto-cycle), and
+ * Renders the header, the light stage, the design carousel (with auto-cycle), and
  * the radar into any container. Typography matches the site (Poppins 44.8px/500
  * hero titles, 16px eyebrows, Manrope text).
  *
@@ -22,34 +22,32 @@
 (function (global) {
   "use strict";
 
-  var STYLE_ID = "baya-portfolio-styles-v36";
+  var STYLE_ID = "baya-portfolio-styles";
 
   var CSS = [
     ".bp-root{max-width:1240px;margin:0 auto;font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;}",
     ".bp-eyebrow{font-family:'Poppins',system-ui,sans-serif;font-size:18px;font-weight:500;",
-    "  color:#0086ff;margin:0 0 6px;}",
+    "  color:#0057b8;margin:0 0 6px;}",
     ".bp-title{font-family:'Poppins',system-ui,sans-serif;font-size:44.8px;font-weight:500;",
-    "  line-height:1.2;color:#ffffff;margin:0 0 20px;}",
-    ".bp-stage{background:#16171b;border-radius:4px;padding:28px;",
-    "  border:1px solid rgba(255,255,255,.10);",
-    "  background-image:",
-    "    radial-gradient(ellipse 75% 65% at 50% 42%,transparent 0%,transparent 35%,#16171b 82%),",
-    "    radial-gradient(rgba(244,244,244,.14) 0,rgba(244,244,244,0) 1.1px);",
-    "  background-repeat:no-repeat,repeat;",
-    "  background-size:100% 100%,4px 4px;}",
+    "  line-height:1.2;color:#0a0a0b;margin:0 0 20px;}",
+    /* stage = Elevated Surface (Baya Design System v1.6 light-chapter raised token);
+       no decorative mesh here, just the flat surface + hairline */
+    ".bp-stage{background:#f4f4f4;border-radius:4px;padding:28px;",
+    "  border:1px solid #e5e5e7;}",
     /* design name + count ("Design 3/10") sits between the two arrow buttons,
        centered above the metrics list */
     ".bp-arrows{display:flex;align-items:center;gap:14px;}",
     ".bp-name{font-family:'Poppins',system-ui,sans-serif;font-size:18px;font-weight:500;",
-    "  color:#ffffff;margin:0;min-width:132px;text-align:center;transition:opacity .16s;",
+    "  color:#0a0a0b;margin:0;min-width:132px;text-align:center;transition:opacity .16s;",
     "  font-variant-numeric:tabular-nums;}",
-    ".bp-arrow{width:38px;height:38px;border-radius:6px;background:#202128;",
-    "  border:1px solid rgba(255,255,255,.13);color:#c7cede;cursor:pointer;flex:0 0 auto;",
+    /* arrows sit on Overlay Surface (Canvas White) so they pop off the grey stage */
+    ".bp-arrow{width:38px;height:38px;border-radius:6px;background:#ffffff;",
+    "  border:1px solid #e5e5e7;color:rgba(10,10,11,.6);cursor:pointer;flex:0 0 auto;",
     "  display:flex;align-items:center;justify-content:center;",
     "  transition:border-color .15s,background .15s,color .15s;}",
-    ".bp-arrow:hover{border-color:#0086ff;background:#14203a;color:#ffffff;}",
-    ".bp-arrow:active{background:#0086ff;color:#ffffff;}",
-    ".bp-arrow:focus-visible{outline:2px solid #3f9dff;outline-offset:1px;}",
+    ".bp-arrow:hover{border-color:#0086ff;background:rgba(0,134,255,.08);color:#0a0a0b;}",
+    ".bp-arrow:active{background:#0086ff;border-color:#0086ff;color:#ffffff;}",
+    ".bp-arrow:focus-visible{outline:2px solid #0086ff;outline-offset:1px;}",
     ".bp-arrow svg{display:block;}",
     /* radar on the left; on the right a centered [prev, name/count, next] row above
        the metrics list — the whole pair centered as a block and vertically aligned
@@ -63,8 +61,8 @@
     ".bp-side .bp-arrows{align-self:center;}",
     ".bp-stage .bradar-panel{flex:none;width:100%;min-width:0;margin-top:0;}",
     ".bp-stage .bradar-overall{width:100%;}",
-    ".bp-disclaimer{font-size:11.5px;font-weight:500;color:#5b6577;text-align:center;",
-    "  margin:16px 0 0;padding-top:16px;border-top:1px solid rgba(255,255,255,.10);}",
+    ".bp-disclaimer{font-size:11.5px;font-weight:500;color:rgba(10,10,11,.45);text-align:center;",
+    "  margin:16px 0 0;padding-top:16px;border-top:1px solid #e5e5e7;}",
     "@media (max-width:900px){",
     "  .bp-title{font-size:32px;}",
     "  .bp-stage{padding:20px;}",
@@ -135,7 +133,7 @@
     container.appendChild(root);
 
     var chart = global.BayaRadar.create(chartMount, {
-      theme: "dark",
+      theme: "light",
       frameless: true,
       eyebrow: "", title: "", subtitle: "",
       maxValue: data.maxValue,

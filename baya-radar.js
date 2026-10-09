@@ -45,7 +45,7 @@
   "use strict";
 
   var SVG_NS = "http://www.w3.org/2000/svg";
-  var STYLE_ID = "baya-radar-styles-v36";
+  var STYLE_ID = "baya-radar-styles";
   var FONTS_ID = "baya-radar-fonts";
   var UID = 0;
   var REDUCED = typeof matchMedia !== "undefined" &&
@@ -92,14 +92,16 @@
     "  border:1px solid #e7ecf2;border-radius:8px;padding:26px 28px 24px;",
     "  box-sizing:border-box;max-width:960px;",
     "  box-shadow:0 1px 2px rgba(16,24,40,.04);}",
-    ".bradar-root{--br-pos:#0068c9;--br-neg:#d63a20;--br-zero:rgba(10,10,11,.35);}",
+    ".bradar-root{--br-pos:#0068c9;--br-neg:#d63a20;--br-zero:rgba(10,10,11,.35);",
+    "  --br-panel-bg:#ffffff;--br-panel-border:#e5e5e7;}",
     ".bradar-root.bradar-dark{--br-ink:#f2f5fa;--br-sub:#aab3c5;--br-mut:#7c8598;",
     "  --br-line:rgba(255,255,255,.09);--br-seg:#1b2233;--br-seg-border:#262f45;",
     "  --br-accent:#3f9dff;--br-accent-deep:#7cbcff;--br-surface:transparent;",
     "  --br-pos:#0086ff;--br-neg:#ff8d75;--br-zero:rgba(255,255,255,.4);",
+    "  --br-panel-bg:rgba(255,255,255,.025);--br-panel-border:rgba(255,255,255,.08);",
     "  border:none;box-shadow:none;}",
     ".bradar-root.bradar-compact,.bradar-root.bradar-frameless{border:none;border-radius:0;",
-    "  padding:0;box-shadow:none;max-width:none;}",
+    "  padding:0;box-shadow:none;max-width:none;background:transparent;}",
     ".bradar-root *{box-sizing:border-box;}",
     ".bradar-eyebrow{font-family:var(--br-head);font-size:17px;font-weight:500;",
     "  color:var(--br-accent);margin:0 0 7px;}",
@@ -170,13 +172,11 @@
     ".bradar-tt-metric{font-size:12px;font-weight:500;color:#c6ccd4;}",
     ".bradar-dark .bradar-tt-metric{color:#55595e;}",
     ".bradar-tt-metric b{color:inherit;font-family:var(--br-body);font-size:14px;font-weight:800;margin-left:2px;}",
-    ".bradar-panel{flex:0 1 300px;min-width:250px;background:none;",
-    "  border-left:1px solid var(--br-line);padding:8px 0 4px 26px;margin-top:14px;}",
-    ".bradar-dark .bradar-panel{border-left:none;background:rgba(255,255,255,.025);",
-    "  border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 20px 14px;margin-top:0;}",
-    ".bradar-compact .bradar-panel{border:none;min-width:0;padding:10px 2px 0;margin-top:2px;}",
+    ".bradar-panel{flex:0 1 300px;min-width:250px;background:var(--br-panel-bg);",
+    "  border:1px solid var(--br-panel-border);border-radius:12px;padding:18px 20px 14px;margin-top:0;}",
+    ".bradar-compact .bradar-panel{border:none;background:none;min-width:0;padding:10px 2px 0;margin-top:2px;}",
     /* overall-benefit card: Baya's average score vs the competitor average */
-    ".bradar-overall{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.08);",
+    ".bradar-overall{background:var(--br-panel-bg);border:1px solid var(--br-panel-border);",
     "  border-radius:12px;padding:14px 20px 12px;}",
     ".bradar-ov-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}",
     ".bradar-ov-val{font-family:var(--br-head);font-size:26px;font-weight:600;",
