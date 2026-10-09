@@ -46,7 +46,6 @@
 
   var SVG_NS = "http://www.w3.org/2000/svg";
   var STYLE_ID = "baya-radar-styles";
-  var FONTS_ID = "baya-radar-fonts";
   var UID = 0;
   var REDUCED = typeof matchMedia !== "undefined" &&
     matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -78,8 +77,7 @@
     compact: false,
     frameless: false, // true = no card chrome (host page provides it)
     tweenMs: 380,     // duration of the morph when values change (single mode)
-    editable: false,
-    webFonts: true
+    editable: false
   };
 
   var CSS = [
@@ -88,6 +86,7 @@
     "  --br-yellow:#ffce00;--br-surface:#ffffff;",
     "  --br-head:'Poppins',system-ui,-apple-system,'Segoe UI',sans-serif;",
     "  --br-body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;",
+    "  --br-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',monospace;",
     "  position:relative;background:var(--br-surface);color:var(--br-ink);font-family:var(--br-body);",
     "  border:1px solid #e7ecf2;border-radius:4px;padding:26px 28px 24px;",
     "  box-sizing:border-box;max-width:960px;",
@@ -155,7 +154,7 @@
     ".bradar-axis-label.bradar-sel{font-weight:800;fill:var(--br-accent);}",
     ".bradar-axis-sub{font-size:10.5px;font-weight:500;fill:var(--br-mut);}",
     ".bradar-wedge{fill:rgba(0,134,255,.08);pointer-events:none;}",
-    ".bradar-tick{font-family:var(--br-body);font-size:10.5px;font-weight:600;fill:#8a9099;",
+    ".bradar-tick{font-family:var(--br-mono);font-size:10.5px;font-weight:600;fill:#8a9099;",
     "  paint-order:stroke;stroke:#ffffff;stroke-width:3px;}",
     ".bradar-dark .bradar-tick{fill:#6b768c;stroke:#16171b;}",
     ".bradar-halo{fill:rgba(0,134,255,.12);stroke:#0086ff;stroke-width:1.5;",
@@ -171,7 +170,7 @@
     ".bradar-tt-dot{width:9px;height:9px;border-radius:50%;flex:0 0 9px;}",
     ".bradar-tt-metric{font-size:12px;font-weight:500;color:#c6ccd4;}",
     ".bradar-dark .bradar-tt-metric{color:#55595e;}",
-    ".bradar-tt-metric b{color:inherit;font-family:var(--br-body);font-size:14px;font-weight:800;margin-left:2px;}",
+    ".bradar-tt-metric b{color:inherit;font-family:var(--br-mono);font-size:14px;font-weight:800;margin-left:2px;}",
     ".bradar-panel{flex:0 1 300px;min-width:250px;background:var(--br-panel-bg);",
     "  border:1px solid var(--br-panel-border);border-radius:4px;padding:18px 20px 14px;margin-top:0;}",
     ".bradar-compact .bradar-panel{border:none;background:none;min-width:0;padding:10px 2px 0;margin-top:2px;}",
@@ -179,7 +178,7 @@
     ".bradar-overall{background:var(--br-panel-bg);border:1px solid var(--br-panel-border);",
     "  border-radius:4px;padding:14px 20px 12px;}",
     ".bradar-ov-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}",
-    ".bradar-ov-val{font-family:var(--br-head);font-size:26px;font-weight:600;",
+    ".bradar-ov-val{font-family:var(--br-mono);font-size:26px;font-weight:600;",
     "  line-height:1.1;font-variant-numeric:tabular-nums;}",
     ".bradar-ov-val.bradar-pos{color:var(--br-pos);}",
     ".bradar-ov-val.bradar-neg{color:var(--br-neg);}",
@@ -202,7 +201,7 @@
     ".bradar-bar-fill{height:100%;width:0;min-width:3px;border-radius:0 4px 4px 0;}",
     "@keyframes bradar-row{from{opacity:0;transform:translateX(-10px);}",
     "  to{opacity:1;transform:translateX(0);}}",
-    ".bradar-bar-val{flex:0 0 44px;font-family:var(--br-body);font-size:17.5px;font-weight:800;",
+    ".bradar-bar-val{flex:0 0 44px;font-family:var(--br-mono);font-size:17.5px;font-weight:800;",
     "  color:var(--br-ink);text-align:right;font-variant-numeric:tabular-nums;}",
     ".bradar-compact .bradar-bar-val{flex:0 0 26px;font-size:11.5px;}",
     /* Baya vs the average of the other companies, per metric — signed diverging bars (panel default) */
@@ -226,7 +225,7 @@
     "  box-shadow:0 0 6px rgba(0,134,255,.3);}",
     ".bradar-ben-fill.bradar-neg{background:linear-gradient(90deg,#ff8d75,#f1502f);",
     "  box-shadow:0 0 6px rgba(241,80,47,.28);}",
-    ".bradar-ben-val{flex:0 0 68px;text-align:right;font-family:var(--br-head);font-size:20px;",
+    ".bradar-ben-val{flex:0 0 68px;text-align:right;font-family:var(--br-mono);font-size:20px;",
     "  font-weight:600;font-variant-numeric:tabular-nums;}",
     ".bradar-ben-val.bradar-pos{color:var(--br-pos);}",
     ".bradar-ben-val.bradar-neg{color:var(--br-neg);}",
@@ -264,7 +263,7 @@
     ".bradar-editor tbody tr:hover{background:#f6f9fd;}",
     ".bradar-editor td:first-child{white-space:nowrap;color:var(--br-ink);font-weight:600;}",
     ".bradar-editor input{width:62px;padding:5px 7px;border:1px solid #d5dde8;border-radius:4px;",
-    "  font-family:var(--br-body);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;",
+    "  font-family:var(--br-mono);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;",
     "  color:var(--br-ink);background:#fff;transition:border-color .15s,box-shadow .15s;}",
     ".bradar-editor input:hover{border-color:#b3c0d1;}",
     ".bradar-editor input:focus{outline:none;border-color:var(--br-accent);",
@@ -286,14 +285,11 @@
     "}"
   ].join("\n");
 
-  function injectStyles(webFonts) {
-    if (webFonts && !document.getElementById(FONTS_ID)) {
-      var l = document.createElement("link");
-      l.id = FONTS_ID;
-      l.rel = "stylesheet";
-      l.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Manrope:wght@500;600;700;800&display=swap";
-      document.head.appendChild(l);
-    }
+  function injectStyles() {
+    // Fonts (Poppins, Manrope, IBM Plex Mono) are not fetched from Google Fonts —
+    // the host page is expected to already have them loaded (self-hosted via
+    // Elementor's font manager). The font-family stacks below fall back to
+    // system-ui if the host page hasn't loaded them.
     if (document.getElementById(STYLE_ID)) return;
     var s = document.createElement("style");
     s.id = STYLE_ID;
@@ -392,7 +388,7 @@
     if (!container) throw new Error("BayaRadar: container element not found");
 
     var cfg = normalizeConfig(userConfig);
-    injectStyles(cfg.webFonts);
+    injectStyles();
 
     var uid = "br" + (++UID);
     var COMPACT = !!cfg.compact;
