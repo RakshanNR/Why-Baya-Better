@@ -40,7 +40,7 @@
     "  color:#0a0a0b;margin:0;min-width:132px;text-align:center;transition:opacity .16s;",
     "  font-variant-numeric:tabular-nums;}",
     /* arrows sit on Overlay Surface (Canvas White) so they pop off the grey stage */
-    ".bp-arrow{width:38px;height:38px;border-radius:6px;background:#ffffff;",
+    ".bp-arrow{width:38px;height:38px;border-radius:4px;background:#ffffff;",
     "  border:1px solid #e5e5e7;color:rgba(10,10,11,.6);cursor:pointer;flex:0 0 auto;",
     "  display:flex;align-items:center;justify-content:center;",
     "  transition:border-color .15s,background .15s,color .15s;}",
