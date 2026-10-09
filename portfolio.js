@@ -27,7 +27,7 @@
   var CSS = [
     ".bp-root{max-width:1240px;margin:0 auto;font-family:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;}",
     ".bp-eyebrow{font-family:'Poppins',system-ui,sans-serif;font-size:18px;font-weight:500;",
-    "  color:#0057b8;margin:0 0 6px;}",
+    "  color:#0086ff;margin:0 0 6px;}",
     ".bp-title{font-family:'Poppins',system-ui,sans-serif;font-size:44.8px;font-weight:500;",
     "  line-height:1.2;color:#0a0a0b;margin:0 0 20px;}",
     /* stage = Elevated Surface (Baya Design System v1.6 light-chapter raised token);
